@@ -1,0 +1,19 @@
+language: node_js
+node_js:
+  - node
+  - 6
+script:
+  - npm run build
+  - npm run test
+  - npm run lint
+  - nyc --silent npm run test
+  - nyc report --reporter=text-lcov | coveralls
+  - nyc check-coverage --lines 80
+after_success:
+  - npm run build
+  - semantic-release pre
+  - npm publish
+  - semantic-release post
+notifications:
+  email: false
+sudo: false

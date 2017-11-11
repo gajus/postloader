@@ -1,0 +1,71 @@
+{
+  "author": {
+    "email": "gajus@gajus.com",
+    "name": "Gajus Kuizinas",
+    "url": "http://gajus.com"
+  },
+  "ava": {
+    "babel": "inherit",
+    "require": [
+      "babel-register"
+    ]
+  },
+  "bin": "./dist/bin/index.js",
+  "dependencies": {
+    "debug": "^3.1.0",
+    "es6-error": "^4.0.2",
+    "lodash": "^4.17.4",
+    "mightyql": "^4.6.1",
+    "yargs": "^10.0.3"
+  },
+  "description": "A scaffolding tool for projects using DataLoader, Flow and PostgreSQL.",
+  "devDependencies": {
+    "ava": "^0.23.0",
+    "babel-cli": "^6.26.0",
+    "babel-plugin-istanbul": "^4.1.5",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-register": "^6.26.0",
+    "coveralls": "^3.0.0",
+    "eslint": "^4.11.0",
+    "eslint-config-canonical": "^9.3.1",
+    "flow-bin": "^0.59.0",
+    "husky": "^0.14.3",
+    "nyc": "^11.3.0",
+    "semantic-release": "^8.2.0"
+  },
+  "engines": {
+    "node": ">=8"
+  },
+  "keywords": [
+    "flowtype",
+    "postgres"
+  ],
+  "license": "BSD-3-Clause",
+  "main": "./dist/index.js",
+  "name": "postloader",
+  "nyc": {
+    "include": [
+      "src/**/*.js"
+    ],
+    "instrument": false,
+    "reporter": [
+      "text-lcov"
+    ],
+    "require": [
+      "babel-register"
+    ],
+    "sourceMap": false
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gajus/postloader"
+  },
+  "scripts": {
+    "build": "rm -fr ./dist && NODE_ENV=production babel ./src --out-dir ./dist --copy-files --source-maps",
+    "lint": "eslint ./src ./test && flow",
+    "test": "ava --verbose"
+  },
+  "version": "1.0.2"
+}

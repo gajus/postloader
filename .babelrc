@@ -1,0 +1,24 @@
+{
+  "env": {
+    "test": {
+      "plugins": [
+        "istanbul"
+      ]
+    }
+  },
+  "plugins": [
+    "transform-object-rest-spread",
+    "transform-flow-strip-types"
+  ],
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "node": 8
+        },
+        "useBuiltIns": true
+      }
+    ]
+  ]
+}
