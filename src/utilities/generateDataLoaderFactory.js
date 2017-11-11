@@ -15,6 +15,9 @@ import isNumberType from './isNumberType';
 
 export default (
   columns: $ReadOnlyArray<ColumnType>,
+
+  // @todo Use indexes to identify unique constraints
+  // eslint-disable-next-line no-unused-vars
   indexes: $ReadOnlyArray<IndexType>
 ): string => {
   const tableNames = columns
