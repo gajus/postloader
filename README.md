@@ -8,6 +8,10 @@
 
 A scaffolding tool for projects using [DataLoader](https://github.com/facebook/dataloader), [Flow](https://flow.org/) and [PostgreSQL](https://www.postgresql.org/).
 
+## Project state
+
+Unfortunately, not a very useful project until [this issue](https://stackoverflow.com/q/47242219/368691) is resolved.
+
 ## Usage examples
 
 ### Generate DataLoader loaders for all database tables

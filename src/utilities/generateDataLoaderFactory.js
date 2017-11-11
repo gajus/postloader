@@ -94,8 +94,7 @@ ${loaderTypes.map((body) => {
     return indent(body, 2);
   }).join(',\n')}
 |};
-
-export const createLoaders = (connection: DatabaseConnectionType) => {
+export const createLoaders = (connection: DatabaseConnectionType): LoadersType => {
 ${loaders
     .map((body) => {
       return indent(body, 2);
