@@ -16,6 +16,7 @@ A scaffolding tool for projects using [DataLoader](https://github.com/facebook/d
   * [Loader names](#loader-names)
 * [Usage examples](#usage-examples)
   * [Generate DataLoader loaders for all database tables](generate-dataloader-loaders-for-all-database-tables)
+  * [Consume the generated code](#consume-the-generated-code)
   * [Handling non-nullable columns in materialized views](handling-non-nullable-columns-in-materialized-views)
 
 ## Motivation
@@ -116,6 +117,43 @@ export const createLoaders = (connection: DatabaseConnectionType) => {
   };
 };
 
+
+```
+
+### Consume the generated code
+
+1. Dump the generated code to a file in your project tree, e.g. `/generated/PostLoader.js`.
+1. Create PostgreSQL connection resource using [mightyql](https://github.com/gajus/mightyql).
+1. Import `createLoaders` factory function from the generated file.
+1. Create the loaders collections.
+1. Consume the loaders.
+
+Example:
+
+```js
+// @flow
+
+import {
+  createConnection
+} from 'mightyql';
+import {
+  createLoaders
+} from './generated/PostLoader';
+import type {
+  UserRecordType
+} from './generated/PostLoader';
+
+const connection = await createConnection({
+  host: '127.0.0.1'
+});
+
+const loaders = createLoaders(connection);
+
+const user = await loaders.UserByIdLoader.load(1);
+
+const updateUserPassword = (user: UserRecordType, newPassword: string) => {
+  // [..]
+};
 
 ```
 
