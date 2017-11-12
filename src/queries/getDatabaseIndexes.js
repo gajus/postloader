@@ -9,12 +9,12 @@ import type {
 } from '../types';
 
 export default async (connection: DatabaseConnectionType): Promise<$ReadOnlyArray<IndexType>> => {
-  const indexes = await connection.any(sql`
+  return connection.any(sql`
     SELECT
       c1.relname "tableName",
       c2.relname "indexName",
       i1.indisunique "indexIsUnique",
-      array_to_string(array_agg(a1.attname), ',') "columnNames"
+      array_agg(a1.attname)::text[] "columnNames"
     FROM
       pg_class c1,
       pg_class c2,
@@ -34,12 +34,4 @@ export default async (connection: DatabaseConnectionType): Promise<$ReadOnlyArra
       c1.relname,
       c2.relname
   `);
-
-  // @see https://github.com/brianc/node-pg-types/issues/68
-  return indexes.map((index) => {
-    return {
-      ...index,
-      columnNames: index.columnNames.split(',')
-    };
-  });
 };
