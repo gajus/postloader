@@ -15,8 +15,8 @@ export type ColumnType = {|
 |};
 
 export type IndexType = {|
-  +columnName: string,
-  +idIsUnique: boolean,
+  +columnNames: $ReadOnlyArray<string>,
+  +indexIsUnique: boolean,
   +indexName: string,
   +tableName: string
 |};

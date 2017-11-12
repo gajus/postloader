@@ -12,6 +12,7 @@ import formatTypeName from './formatTypeName';
 import generateFlowTypeDocument from './generateFlowTypeDocument';
 import indent from './indent';
 import isNumberType from './isNumberType';
+import isStringType from './isStringType';
 
 const createColumnSelector = (columns: $ReadOnlyArray<ColumnType>): string => {
   return columns
@@ -25,9 +26,6 @@ const createColumnSelector = (columns: $ReadOnlyArray<ColumnType>): string => {
 
 export default (
   columns: $ReadOnlyArray<ColumnType>,
-
-  // @todo Use indexes to identify unique constraints
-  // eslint-disable-next-line no-unused-vars
   indexes: $ReadOnlyArray<IndexType>
 ): string => {
   const tableNames = columns
@@ -56,25 +54,49 @@ export default (
 
     const resouceName = upperFirst(camelCase(mappedTableName));
 
-    const idColumns = tableColumns.filter((column) => {
-      return column.name === 'id' || column.name.endsWith('_id');
-    });
-
     const tableColumnSelector = createColumnSelector(tableColumns);
 
-    for (const idColumn of idColumns) {
-      const loaderName = resouceName + 'By' + upperFirst(camelCase(idColumn.name)) + 'Loader';
+    const tableUniqueIndexes = indexes.filter((index) => {
+      return index.tableName === tableName && index.indexIsUnique === true && index.columnNames.length === 1;
+    });
+
+    for (const tableUniqueIndex of tableUniqueIndexes) {
+      const maybeIndexColumnName = tableUniqueIndex.columnNames[0];
+
+      if (!maybeIndexColumnName) {
+        throw new Error('Unexpected state.');
+      }
+
+      const indexColumn = tableColumns.find((column) => {
+        return column.name === maybeIndexColumnName;
+      });
+
+      if (!indexColumn) {
+        throw new Error('Unexpected state.');
+      }
+
+      const indexPropertyName = upperFirst(camelCase(indexColumn.name));
+
+      const loaderName = resouceName + 'By' + indexPropertyName + 'Loader';
 
       loaders.push(
         `
 const ${loaderName} = new DataLoader((ids) => {
-  return getByIds(connection, '${idColumn.tableName}', ids, '${idColumn.name}', '${tableColumnSelector}');
+  return getByIds(connection, '${tableName}', ids, '${indexColumn.name}', '${tableColumnSelector}');
 });`
       );
 
-      const keyType = isNumberType(idColumn.dataType) ? 'number' : 'string';
+      let keyType: 'number' | 'string';
 
-      const loaderType = '+' + loaderName + ': DataLoader<' + keyType + ', ' + formatTypeName(idColumn.mappedTableName) + '>';
+      if (isNumberType(indexColumn.dataType)) {
+        keyType = 'number';
+      } else if (isStringType(indexColumn.dataType)) {
+        keyType = 'string';
+      } else {
+        throw new Error('Unexpected state.');
+      }
+
+      const loaderType = '+' + loaderName + ': DataLoader<' + keyType + ', ' + formatTypeName(indexColumn.mappedTableName) + '>';
 
       loaderTypes.push(loaderType);
 

@@ -10,6 +10,7 @@ A scaffolding tool for projects using [DataLoader](https://github.com/facebook/d
 
 * [Motivation](#motivation)
 * [Behaviour](#behaviour)
+  * [Unique key loader](#unique-key-loader)
 * [Naming conventions](#naming-conventions)
   * [Type names](#type-names)
   * [Property names](#property-names)
@@ -38,6 +39,10 @@ The generated code consists of:
 
 1. Flow type declarations describing every table in the database.
 1. A factory function used to construct a collection of loaders.
+
+### Unique key loader
+
+A loader is created for every unique index in the table ([unique indexes including multiple columns are not supported](https://github.com/gajus/postloader/issues/1)).
 
 ## Naming conventions
 
