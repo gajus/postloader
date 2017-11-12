@@ -8,9 +8,20 @@
 
 A scaffolding tool for projects using [DataLoader](https://github.com/facebook/dataloader), [Flow](https://flow.org/) and [PostgreSQL](https://www.postgresql.org/).
 
-## Project state
+## Handling non-nullable columns in materialized views
 
-Unfortunately, not a very useful project until [this issue](https://stackoverflow.com/q/47242219/368691) is resolved.
+Unfortunately, PostgreSQL does not describe materilized view columns as non-nullable even when you add a constraint that enforce this contract ([see this Stack Overflow question](https://stackoverflow.com/q/47242219/368691)).
+
+For materialied views, you need to explicitly identify which collumns are non-nullable. This can be done by adding `POSTLOAD_NOTNULL` comment to the column, e.g.
+
+```sql
+COMMENT ON COLUMN user.id IS 'POSTLOAD_NOTNULL';
+COMMENT ON COLUMN user.email IS 'POSTLOAD_NOTNULL';
+COMMENT ON COLUMN user.password IS 'POSTLOAD_NOTNULL';
+COMMENT ON COLUMN user.created_at IS 'POSTLOAD_NOTNULL';
+COMMENT ON COLUMN user.pseudonym IS 'POSTLOAD_NOTNULL';
+
+```
 
 ## Usage examples
 
@@ -18,7 +29,7 @@ Unfortunately, not a very useful project until [this issue](https://stackoverflo
 
 ```bash
 export POSTLOADER_DATABASE_CONNECTION_URI=postgres://postgres:password@127.0.0.1/test
-export POSTLOADER_COLUMN_FILTER="return !columns.find((column) => column.tableName + '_view' === tableName)"
+export POSTLOADER_COLUMN_FILTER="return /* exclude tables that have a _view */ !columns.map(column => column.tableName).includes(tableName + '_view')"
 export POSTLOADER_TABLE_NAME_MAPPER="return tableName.endsWith('_view') ? tableName.slice(0, -5) : tableName;"
 
 postloader generate-loaders > ./PostLoader.js

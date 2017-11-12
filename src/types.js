@@ -5,10 +5,12 @@ export type {
 } from 'mightyql';
 
 export type ColumnType = {|
-  +columnName: string,
+  +comment: string | null,
   +dataType: string,
   +isMaterializedView: boolean,
   +isNullable: boolean,
+  +mappedTableName: string,
+  +name: string,
   +tableName: string
 |};
 
@@ -17,11 +19,4 @@ export type IndexType = {|
   +idIsUnique: boolean,
   +indexName: string,
   +tableName: string
-|};
-
-export type TypePropertyType = {|
-  +column: ColumnType,
-  +name: string,
-  +type: string,
-  +typeName: string
 |};

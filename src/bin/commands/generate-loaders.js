@@ -60,7 +60,13 @@ export const handler = async (argv: ConfigurationType): Promise<void> => {
         return true;
       }
 
-      return filterColumn(column.tableName, column.columnName, columns);
+      return filterColumn(column.tableName, column.name, columns);
+    })
+    .map((column) => {
+      return {
+        ...column,
+        isNullable: column.comment && column.comment.includes('POSTLOAD_NOTNULL') ? false : column.isNullable
+      };
     })
     .map((column) => {
       if (!mapTableName) {
@@ -69,7 +75,7 @@ export const handler = async (argv: ConfigurationType): Promise<void> => {
 
       return {
         ...column,
-        tableName: mapTableName(column.tableName, columns)
+        mappedTableName: mapTableName(column.tableName, columns)
       };
     });
 

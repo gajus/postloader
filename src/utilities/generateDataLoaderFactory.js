@@ -33,36 +33,44 @@ export default (
   const loaderTypes = [];
 
   for (const tableName of tableNames) {
-    const resouceName = upperFirst(camelCase(tableName));
     const tableColumns = columns.filter((column) => {
       return column.tableName === tableName;
     });
 
+    if (tableColumns.length === 0) {
+      // eslint-disable-next-line no-continue
+      continue;
+    }
+
+    const mappedTableName = tableColumns[0].mappedTableName;
+
+    const resouceName = upperFirst(camelCase(mappedTableName));
+
     const idColumns = tableColumns.filter((column) => {
-      return column.columnName === 'id' || column.columnName.endsWith('_id');
+      return column.name === 'id' || column.name.endsWith('_id');
     });
 
     const tableColumnSelector = tableColumns
       .map((column) => {
-        const normalizedColumnName = camelCase(column.columnName);
+        const normalizedColumnName = camelCase(column.name);
 
-        return column.columnName === normalizedColumnName ? '"' + normalizedColumnName + '"' : '"' + column.columnName + '" "' + normalizedColumnName + '"';
+        return column.name === normalizedColumnName ? '"' + normalizedColumnName + '"' : '"' + column.name + '" "' + normalizedColumnName + '"';
       })
       .join(', ');
 
     for (const idColumn of idColumns) {
-      const loaderName = resouceName + 'By' + upperFirst(camelCase(idColumn.columnName)) + 'Loader';
+      const loaderName = resouceName + 'By' + upperFirst(camelCase(idColumn.name)) + 'Loader';
 
       loaders.push(
         `
 const ${loaderName} = new DataLoader((ids) => {
-  return getByIds(connection, '${idColumn.tableName}', ids, '${idColumn.columnName}', '${tableColumnSelector}');
+  return getByIds(connection, '${idColumn.tableName}', ids, '${idColumn.name}', '${tableColumnSelector}');
 });`
       );
 
       const keyType = isNumberType(idColumn.dataType) ? 'number' : 'string';
 
-      const loaderType = '+' + loaderName + ': DataLoader<' + keyType + ', ' + formatTypeName(idColumn.tableName) + '>';
+      const loaderType = '+' + loaderName + ': DataLoader<' + keyType + ', ' + formatTypeName(idColumn.mappedTableName) + '>';
 
       loaderTypes.push(loaderType);
 

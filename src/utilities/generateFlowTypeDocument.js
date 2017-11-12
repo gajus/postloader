@@ -16,7 +16,7 @@ const generateFlowTypeDeclarationBody = (columns: $ReadOnlyArray<ColumnType>): s
   const propertyDeclarations = [];
 
   for (const column of sortedColumns) {
-    propertyDeclarations.push('+' + formatPropertyName(column.columnName) + ': ' + getFlowType(column.dataType) + (column.isNullable ? ' | null' : ''));
+    propertyDeclarations.push('+' + formatPropertyName(column.name) + ': ' + getFlowType(column.dataType) + (column.isNullable ? ' | null' : ''));
   }
 
   return propertyDeclarations.join('\n');
@@ -27,7 +27,7 @@ export default (
 ): string => {
   const tableNames = columns
     .map((column) => {
-      return column.tableName;
+      return column.mappedTableName;
     })
     .filter((tableName, index, self) => {
       return self.indexOf(tableName) === index;
@@ -37,7 +37,7 @@ export default (
 
   for (const tableName of tableNames) {
     const tableColumns = columns.filter((column) => {
-      return column.tableName === tableName;
+      return column.mappedTableName === tableName;
     });
 
     const typeName = formatTypeName(tableName);
@@ -45,12 +45,17 @@ export default (
     // @todo Use indent.
 
     const typeDeclaration = `
-export type ${typeName} = {|
+type ${typeName} = {|
   ${generateFlowTypeDeclarationBody(tableColumns).split('\n').join(',\n  ')}
 |};`;
 
     typeDeclarations.push(typeDeclaration);
   }
 
-  return typeDeclarations.join('\n');
+  return typeDeclarations.join('\n') + `\n
+export type {
+  ${tableNames.map((tableName) => {
+    return formatTypeName(tableName);
+  }).join(',\n  ')}
+};`;
 };

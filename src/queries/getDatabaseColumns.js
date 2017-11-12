@@ -11,8 +11,9 @@ import type {
 export default async (connection: DatabaseConnectionType): Promise<$ReadOnlyArray<ColumnType>> => {
   return connection.any(sql`
     SELECT
-      pc1.relname AS "tableName",
-      pa1.attname AS "columnName",
+      pc1.relname "tableName",
+      pa1.attname "name",
+      pd1.description "comment",
       pg_catalog.format_type (pa1.atttypid, NULL) "dataType",
       pc1.relkind = 'm' "isMaterializedView",
       NOT(pa1.attnotnull) "isNullable"
@@ -23,6 +24,7 @@ export default async (connection: DatabaseConnectionType): Promise<$ReadOnlyArra
       pg_attribute pa1 ON pa1.attrelid = pc1.oid
       AND pa1.attnum > 0
       AND NOT pa1.attisdropped
+    LEFT JOIN pg_description pd1 ON pd1.objoid = pa1.attrelid AND pd1.objsubid = pa1.attnum
     WHERE
       pn1.nspname = 'public' AND
       pc1.relkind IN ('r', 'm')
