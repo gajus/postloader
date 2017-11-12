@@ -8,9 +8,33 @@
 
 A scaffolding tool for projects using [DataLoader](https://github.com/facebook/dataloader), [Flow](https://flow.org/) and [PostgreSQL](https://www.postgresql.org/).
 
+* [Naming conventions](#naming-conventions)
+  * [Type names](#type-names)
+  * [Property names](#property-names)
+  * [Loader names](#loader-names)
 * [Usage examples](#usage-examples)
   * [Generate DataLoader loaders for all database tables](generate-dataloader-loaders-for-all-database-tables)
   * [Handling non-nullable columns in materialized views](handling-non-nullable-columns-in-materialized-views)
+
+## Naming conventions
+
+### Type names
+
+Type names are created from table names.
+
+Table name is camel cased, the first letter is uppercased and suffixed with "RecordType", e.g. "movie_rating" becomes `MovieRatingRecordType`.
+
+### Property names
+
+Property names of type declarations are derived from the respective table column names.
+
+Column names are camel cased, e.g. "first_name" becomes `firstName`.
+
+### Loader names
+
+Loader names are created from table names and column names.
+
+Table name is camel cased, the first letter is uppercased, suffixed with "By" constant, followed by the name of the property (camel cased, the first letter is uppercased) used to load the resource, followed by "Loader" constant, e.g. a record from "user" table with "id" column can be loaded using `UserByIdLoader` loader.
 
 ## Usage examples
 
