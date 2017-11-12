@@ -13,6 +13,16 @@ import generateFlowTypeDocument from './generateFlowTypeDocument';
 import indent from './indent';
 import isNumberType from './isNumberType';
 
+const createColumnSelector = (columns: $ReadOnlyArray<ColumnType>): string => {
+  return columns
+    .map((column) => {
+      const normalizedColumnName = camelCase(column.name);
+
+      return column.name === normalizedColumnName ? '"' + normalizedColumnName + '"' : '"' + column.name + '" "' + normalizedColumnName + '"';
+    })
+    .join(', ');
+};
+
 export default (
   columns: $ReadOnlyArray<ColumnType>,
 
@@ -50,13 +60,7 @@ export default (
       return column.name === 'id' || column.name.endsWith('_id');
     });
 
-    const tableColumnSelector = tableColumns
-      .map((column) => {
-        const normalizedColumnName = camelCase(column.name);
-
-        return column.name === normalizedColumnName ? '"' + normalizedColumnName + '"' : '"' + column.name + '" "' + normalizedColumnName + '"';
-      })
-      .join(', ');
+    const tableColumnSelector = createColumnSelector(tableColumns);
 
     for (const idColumn of idColumns) {
       const loaderName = resouceName + 'By' + upperFirst(camelCase(idColumn.name)) + 'Loader';
