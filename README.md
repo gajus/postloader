@@ -8,6 +8,7 @@
 
 A scaffolding tool for projects using [DataLoader](https://github.com/facebook/dataloader), [Flow](https://flow.org/) and [PostgreSQL](https://www.postgresql.org/).
 
+* [Behaviour](#behaviour)
 * [Naming conventions](#naming-conventions)
   * [Type names](#type-names)
   * [Property names](#property-names)
@@ -15,6 +16,15 @@ A scaffolding tool for projects using [DataLoader](https://github.com/facebook/d
 * [Usage examples](#usage-examples)
   * [Generate DataLoader loaders for all database tables](generate-dataloader-loaders-for-all-database-tables)
   * [Handling non-nullable columns in materialized views](handling-non-nullable-columns-in-materialized-views)
+
+## Behaviour
+
+PostLoader is a CLI program (and a collection of utilities) used to generate code based on a PostgreSQL database schema.
+
+The generated code consists of:
+
+1. Flow type declarations describing every table in the database.
+2. A factory function used to construct a collection of loaders.
 
 ## Naming conventions
 
