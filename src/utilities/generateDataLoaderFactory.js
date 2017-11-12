@@ -59,14 +59,14 @@ export default (
     const tableColumnSelector = createColumnSelector(tableColumns);
 
     for (const tableColumn of tableColumns) {
-      if (tableColumn.hasForeignKeyConstraint) {
+      if (tableColumn.name.endsWith('_id')) {
         const loaderName = pluralize(resouceName) + 'By' + upperFirst(camelCase(tableColumn.name)) + 'Loader';
 
         loaders.push(
           `
-  const ${loaderName} = new DataLoader((ids) => {
-    return getByIds(connection, '${tableName}', ids, '${tableColumn.name}', '${tableColumnSelector}', true);
-  });`
+const ${loaderName} = new DataLoader((ids) => {
+  return getByIds(connection, '${tableName}', ids, '${tableColumn.name}', '${tableColumnSelector}', true);
+});`
         );
 
         let keyType: 'number' | 'string';

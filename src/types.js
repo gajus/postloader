@@ -7,7 +7,6 @@ export type {
 export type ColumnType = {|
   +comment: string | null,
   +dataType: string,
-  +hasForeignKeyConstraint: boolean,
   +isMaterializedView: boolean,
   +isNullable: boolean,
   +mappedTableName: string,

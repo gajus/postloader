@@ -16,12 +16,7 @@ export default async (connection: DatabaseConnectionType): Promise<$ReadOnlyArra
       pd1.description "comment",
       pg_catalog.format_type (pa1.atttypid, NULL) "dataType",
       pc1.relkind = 'm' "isMaterializedView",
-      NOT(pa1.attnotnull) "isNullable",
-      EXISTS(
-        SELECT 1
-        FROM pg_constraint pc2
-        WHERE pc2.conrelid = pc1.oid AND pc2.contype = 'f' AND pa1.attnum = ANY(pc2.confkey)
-      ) "hasForeignKeyConstraint"
+      NOT(pa1.attnotnull) "isNullable"
     FROM
       pg_class pc1
     INNER JOIN pg_namespace pn1 ON pn1.oid = pc1.relnamespace

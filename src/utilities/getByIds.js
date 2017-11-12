@@ -1,5 +1,8 @@
 // @flow
 
+import {
+  camelCase
+} from 'lodash';
 import type {
   DatabaseConnectionType
 } from '../types';
@@ -23,10 +26,12 @@ export default async (
 
   const results = [];
 
+  const targetPropertyName = camelCase(idName);
+
   if (multiple) {
     for (const id of ids) {
       const result = rows.filter((row) => {
-        return row[idName] === id;
+        return row[targetPropertyName] === id;
       });
 
       results.push(result);
@@ -34,7 +39,7 @@ export default async (
   } else {
     for (const id of ids) {
       let result = rows.find((row) => {
-        return row[idName] === id;
+        return row[targetPropertyName] === id;
       });
 
       if (!result) {
