@@ -63,8 +63,7 @@ export default (
         const loaderName = pluralize(resouceName) + 'By' + upperFirst(camelCase(tableColumn.name)) + 'Loader';
 
         loaders.push(
-          `
-const ${loaderName} = new DataLoader((ids) => {
+          `const ${loaderName} = new DataLoader((ids) => {
   return getByIds(connection, '${tableName}', ids, '${tableColumn.name}', '${tableColumnSelector}', true);
 });`
         );
@@ -109,8 +108,7 @@ const ${loaderName} = new DataLoader((ids) => {
       const loaderName = resouceName + 'By' + upperFirst(camelCase(indexColumn.name)) + 'Loader';
 
       loaders.push(
-        `
-const ${loaderName} = new DataLoader((ids) => {
+        `const ${loaderName} = new DataLoader((ids) => {
   return getByIds(connection, '${tableName}', ids, '${indexColumn.name}', '${tableColumnSelector}', false, NotFoundError);
 });`
       );
@@ -157,6 +155,7 @@ ${loaderTypes.map((body) => {
     return indent(body, 2);
   }).join(',\n')}
 |};
+
 export const createLoaders = (connection: DatabaseConnectionType, NotFoundError: Class<Error>): LoadersType => {
 ${loaders
     .map((body) => {
@@ -171,7 +170,5 @@ ${loaderNames
     })
     .join(',\n')}
   };
-};
-
-`;
+};`;
 };
