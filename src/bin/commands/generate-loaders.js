@@ -2,7 +2,7 @@
 
 import {
   createConnection
-} from 'mightyql';
+} from 'slonik';
 import type {
   ColumnType
 } from '../../types';

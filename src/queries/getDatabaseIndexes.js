@@ -2,7 +2,7 @@
 
 import {
   sql
-} from 'mightyql';
+} from 'slonik';
 import type {
   DatabaseConnectionType,
   IndexType

@@ -147,7 +147,7 @@ import {
 import DataLoader from 'dataloader';
 import type {
   DatabaseConnectionType
-} from 'mightyql';
+} from 'slonik';
 ${generateFlowTypeDocument(columns)}
 
 export type LoadersType = {|

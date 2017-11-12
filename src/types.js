@@ -2,7 +2,7 @@
 
 export type {
   DatabaseConnectionType
-} from 'mightyql';
+} from 'slonik';
 
 export type ColumnType = {|
   +comment: string | null,

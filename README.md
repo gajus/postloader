@@ -94,7 +94,7 @@ import {
 import DataLoader from 'dataloader';
 import type {
   DatabaseConnectionType
-} from 'mightyql';
+} from 'slonik';
 
 export type UserRecordType = {|
   +id: number,
@@ -134,7 +134,7 @@ export const createLoaders = (connection: DatabaseConnectionType) => {
 ### Consume the generated code
 
 1. Dump the generated code to a file in your project tree, e.g. `/generated/PostLoader.js`.
-1. Create PostgreSQL connection resource using [mightyql](https://github.com/gajus/mightyql).
+1. Create PostgreSQL connection resource using [Slonik](https://github.com/gajus/slonik).
 1. Import `createLoaders` factory function from the generated file.
 1. Create the loaders collections.
 1. Consume the loaders.
@@ -146,7 +146,7 @@ Example:
 
 import {
   createConnection
-} from 'mightyql';
+} from 'slonik';
 import {
   createLoaders
 } from './generated/PostLoader';
