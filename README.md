@@ -8,20 +8,9 @@
 
 A scaffolding tool for projects using [DataLoader](https://github.com/facebook/dataloader), [Flow](https://flow.org/) and [PostgreSQL](https://www.postgresql.org/).
 
-## Handling non-nullable columns in materialized views
-
-Unfortunately, PostgreSQL does not describe materilized view columns as non-nullable even when you add a constraint that enforce this contract ([see this Stack Overflow question](https://stackoverflow.com/q/47242219/368691)).
-
-For materialied views, you need to explicitly identify which collumns are non-nullable. This can be done by adding `POSTLOAD_NOTNULL` comment to the column, e.g.
-
-```sql
-COMMENT ON COLUMN user.id IS 'POSTLOAD_NOTNULL';
-COMMENT ON COLUMN user.email IS 'POSTLOAD_NOTNULL';
-COMMENT ON COLUMN user.password IS 'POSTLOAD_NOTNULL';
-COMMENT ON COLUMN user.created_at IS 'POSTLOAD_NOTNULL';
-COMMENT ON COLUMN user.pseudonym IS 'POSTLOAD_NOTNULL';
-
-```
+* [Usage examples](#usage-examples)
+  * [Generate DataLoader loaders for all database tables](generate-dataloader-loaders-for-all-database-tables)
+  * [Handling non-nullable columns in materialized views](handling-non-nullable-columns-in-materialized-views)
 
 ## Usage examples
 
@@ -81,5 +70,20 @@ export const createLoaders = (connection: DatabaseConnectionType) => {
   };
 };
 
+
+```
+
+### Handling non-nullable columns in materialized views
+
+Unfortunately, PostgreSQL does not describe materilized view columns as non-nullable even when you add a constraint that enforce this contract ([see this Stack Overflow question](https://stackoverflow.com/q/47242219/368691)).
+
+For materialied views, you need to explicitly identify which collumns are non-nullable. This can be done by adding `POSTLOAD_NOTNULL` comment to the column, e.g.
+
+```sql
+COMMENT ON COLUMN user.id IS 'POSTLOAD_NOTNULL';
+COMMENT ON COLUMN user.email IS 'POSTLOAD_NOTNULL';
+COMMENT ON COLUMN user.password IS 'POSTLOAD_NOTNULL';
+COMMENT ON COLUMN user.created_at IS 'POSTLOAD_NOTNULL';
+COMMENT ON COLUMN user.pseudonym IS 'POSTLOAD_NOTNULL';
 
 ```
