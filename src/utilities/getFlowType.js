@@ -4,6 +4,7 @@ import {
   createDebug
 } from '../factories';
 import isNumberType from './isNumberType';
+import isStringType from './isStringType';
 
 const debug = createDebug('mapFlowType');
 
@@ -12,12 +13,12 @@ export default (databaseTypeName: string): string => {
     return 'Object';
   }
 
-  if (/^(?:text|character|timestamp|coordinates)(\s|$)/.test(databaseTypeName)) {
-    return 'string';
-  }
-
   if (databaseTypeName === 'boolean') {
     return 'boolean';
+  }
+
+  if (isStringType(databaseTypeName)) {
+    return 'string';
   }
 
   if (isNumberType(databaseTypeName)) {
