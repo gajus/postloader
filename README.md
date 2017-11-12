@@ -15,9 +15,9 @@ A scaffolding tool for projects using [DataLoader](https://github.com/facebook/d
   * [Property names](#property-names)
   * [Loader names](#loader-names)
 * [Usage examples](#usage-examples)
-  * [Generate DataLoader loaders for all database tables](generate-dataloader-loaders-for-all-database-tables)
+  * [Generate DataLoader loaders for all database tables](#generate-dataloader-loaders-for-all-database-tables)
   * [Consume the generated code](#consume-the-generated-code)
-  * [Handling non-nullable columns in materialized views](handling-non-nullable-columns-in-materialized-views)
+  * [Handling non-nullable columns in materialized views](#handling-non-nullable-columns-in-materialized-views)
 
 ## Motivation
 
