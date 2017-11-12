@@ -3,33 +3,6 @@
 import type {
   DatabaseConnectionType
 } from '../types';
-import sortInOrderBy from './sortInOrderBy';
-
-const packData = (
-  rows: $ReadOnlyArray<Object>,
-  ids: $ReadOnlyArray<string | number>,
-  idName: string,
-  NotFoundError: Class<Error>
-) => {
-  const packedRows = [];
-
-  for (const id of ids) {
-    let body = rows.find((row) => {
-      return row[idName] === id;
-    });
-
-    if (!body) {
-      body = new NotFoundError();
-    }
-
-    packedRows.push({
-      body,
-      [idName]: id
-    });
-  }
-
-  return packedRows;
-};
 
 export default async (
   connection: DatabaseConnectionType,
@@ -37,8 +10,9 @@ export default async (
   ids: $ReadOnlyArray<string | number>,
   idName: string = 'id',
   columnSelector: string,
+  multiple: boolean,
   NotFoundError: Class<Error>
-): Promise<$ReadOnlyArray<Object>> => {
+): Promise<$ReadOnlyArray<any>> => {
   let rows = [];
 
   if (ids.length > 0) {
@@ -47,11 +21,29 @@ export default async (
     ]);
   }
 
-  const packedRows = packData(rows, ids, idName, NotFoundError);
+  const results = [];
 
-  const results = sortInOrderBy(packedRows, ids, idName);
+  if (multiple) {
+    for (const id of ids) {
+      const result = rows.filter((row) => {
+        return row[idName] === id;
+      });
 
-  return results.map((pack) => {
-    return pack.body;
-  });
+      results.push(result);
+    }
+  } else {
+    for (const id of ids) {
+      let result = rows.find((row) => {
+        return row[idName] === id;
+      });
+
+      if (!result) {
+        result = new NotFoundError();
+      }
+
+      results.push(result);
+    }
+  }
+
+  return results;
 };

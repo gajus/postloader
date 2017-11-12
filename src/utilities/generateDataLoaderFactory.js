@@ -1,5 +1,6 @@
 // @flow
 
+import pluralize from 'pluralize';
 import {
   camelCase,
   upperFirst
@@ -24,6 +25,7 @@ const createColumnSelector = (columns: $ReadOnlyArray<ColumnType>): string => {
     .join(', ');
 };
 
+// eslint-disable-next-line complexity
 export default (
   columns: $ReadOnlyArray<ColumnType>,
   indexes: $ReadOnlyArray<IndexType>
@@ -56,6 +58,35 @@ export default (
 
     const tableColumnSelector = createColumnSelector(tableColumns);
 
+    for (const tableColumn of tableColumns) {
+      if (tableColumn.hasForeignKeyConstraint) {
+        const loaderName = pluralize(resouceName) + 'By' + upperFirst(camelCase(tableColumn.name)) + 'Loader';
+
+        loaders.push(
+          `
+  const ${loaderName} = new DataLoader((ids) => {
+    return getByIds(connection, '${tableName}', ids, '${tableColumn.name}', '${tableColumnSelector}', true);
+  });`
+        );
+
+        let keyType: 'number' | 'string';
+
+        if (isNumberType(tableColumn.dataType)) {
+          keyType = 'number';
+        } else if (isStringType(tableColumn.dataType)) {
+          keyType = 'string';
+        } else {
+          throw new Error('Unexpected state.');
+        }
+
+        const loaderType = '+' + loaderName + ': DataLoader<' + keyType + ', $ReadOnlyArray<' + formatTypeName(tableColumn.mappedTableName) + '>>';
+
+        loaderTypes.push(loaderType);
+
+        loaderNames.push(loaderName);
+      }
+    }
+
     const tableUniqueIndexes = indexes.filter((index) => {
       return index.tableName === tableName && index.indexIsUnique === true && index.columnNames.length === 1;
     });
@@ -75,14 +106,12 @@ export default (
         throw new Error('Unexpected state.');
       }
 
-      const indexPropertyName = upperFirst(camelCase(indexColumn.name));
-
-      const loaderName = resouceName + 'By' + indexPropertyName + 'Loader';
+      const loaderName = resouceName + 'By' + upperFirst(camelCase(indexColumn.name)) + 'Loader';
 
       loaders.push(
         `
 const ${loaderName} = new DataLoader((ids) => {
-  return getByIds(connection, '${tableName}', ids, '${indexColumn.name}', '${tableColumnSelector}');
+  return getByIds(connection, '${tableName}', ids, '${indexColumn.name}', '${tableColumnSelector}', false, NotFoundError);
 });`
       );
 
@@ -128,7 +157,7 @@ ${loaderTypes.map((body) => {
     return indent(body, 2);
   }).join(',\n')}
 |};
-export const createLoaders = (connection: DatabaseConnectionType): LoadersType => {
+export const createLoaders = (connection: DatabaseConnectionType, NotFoundError: Class<Error>): LoadersType => {
 ${loaders
     .map((body) => {
       return indent(body, 2);

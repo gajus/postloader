@@ -42,7 +42,13 @@ The generated code consists of:
 
 ### Unique key loader
 
-A loader is created for every unique index in the table ([unique indexes including multiple columns are not supported](https://github.com/gajus/postloader/issues/1)).
+A loader is created for every column in a unique index ([unique indexes including multiple columns are not supported](https://github.com/gajus/postloader/issues/1)), e.g. `UserByIdLoader`.
+
+### Non-unique foreign-key loaders
+
+A loader is created for every column that has a foreign-key constraint.
+
+A non-unique loader is used to return multiple rows per lookup, e.g. `CitiesByCountryIdLoader`. The underlying data in this example comes from a table named "city". PostLoader is using [`pluralize`](https://www.npmjs.com/package/pluralize) module to pluralize the table name.
 
 ## Naming conventions
 
