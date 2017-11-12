@@ -3,9 +3,14 @@
 import {
   camelCase
 } from 'lodash';
+import Logger from '../Logger';
 import type {
   DatabaseConnectionType
 } from '../types';
+
+const log = Logger.child({
+  namespace: 'getByIds'
+});
 
 export default async (
   connection: DatabaseConnectionType,
@@ -43,6 +48,12 @@ export default async (
       });
 
       if (!result) {
+        log.warn({
+          id,
+          idName,
+          tableName
+        }, 'resource not found');
+
         result = new NotFoundError();
       }
 

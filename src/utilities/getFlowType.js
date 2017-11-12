@@ -1,12 +1,12 @@
 // @flow
 
-import {
-  createDebug
-} from '../factories';
+import Logger from '../Logger';
 import isNumberType from './isNumberType';
 import isStringType from './isStringType';
 
-const debug = createDebug('mapFlowType');
+const log = Logger.child({
+  namespace: 'getFlowType'
+});
 
 export default (databaseTypeName: string): string => {
   if (databaseTypeName === 'json') {
@@ -25,7 +25,9 @@ export default (databaseTypeName: string): string => {
     return 'number';
   }
 
-  debug('unknown type', databaseTypeName);
+  log.warn({
+    databaseTypeName
+  }, 'unknown type');
 
   return 'any';
 };
