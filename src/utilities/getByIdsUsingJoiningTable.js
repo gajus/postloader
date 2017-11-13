@@ -20,7 +20,7 @@ export default async (
       SELECT r1.${lookupKeyName}_id "POSTLOADER_LOOKUP_KEY", ${columnSelector}
       FROM ${joiningTableName} r1
       INNER JOIN ${targetResourceTableName} r2 ON r2.id = r1.${joiningKeyName}_id
-      WHERE r2.${lookupKeyName}_id IN ?
+      WHERE r1.${lookupKeyName}_id IN ?
     `, [
       ids
     ]);
