@@ -4,15 +4,17 @@
  * @see https://www.postgresql.org/docs/current/static/datatype-numeric.html
  */
 const numericTypes = [
-  'smallint',
-  'integer',
   'bigint',
+  'bigserial',
   'decimal',
+  'double precision',
+  'integer',
   'numeric',
   'real',
-  'double precision',
   'serial',
-  'bigserial'
+  'smallint',
+  'timestamp with time zone',
+  'timestamp'
 ];
 
 export default (databaseTypeName: string): boolean => {
