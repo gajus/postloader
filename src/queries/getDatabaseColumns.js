@@ -12,6 +12,7 @@ export default async (connection: DatabaseConnectionType): Promise<$ReadOnlyArra
   return connection.any(sql`
     SELECT
       pc1.relname "tableName",
+      pa1.attnum,
       pa1.attname "name",
       pd1.description "comment",
       pg_catalog.format_type (pa1.atttypid, NULL) "dataType",
@@ -28,5 +29,8 @@ export default async (connection: DatabaseConnectionType): Promise<$ReadOnlyArra
     WHERE
       pn1.nspname = 'public' AND
       pc1.relkind IN ('r', 'm')
+    ORDER BY
+      pc1.relname ASC,
+      pa1.attnum ASC
   `);
 };

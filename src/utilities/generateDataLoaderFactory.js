@@ -9,43 +9,30 @@ import type {
   ColumnType,
   IndexType
 } from '../types';
-import formatTypeName from './formatTypeName';
 import generateFlowTypeDocument from './generateFlowTypeDocument';
 import indent from './indent';
-import isNumberType from './isNumberType';
-import isStringType from './isStringType';
+import isJoiningTable from './isJoiningTable';
+import createColumnSelector from './createColumnSelector';
+import createLoaderTypePropertyDeclaration from './createLoaderTypePropertyDeclaration';
+import pluralizeTableName from './pluralizeTableName';
 
-// @todo Support multi-word joinign tables.
-const isJoiningTable = (tableName: string, columns: $ReadOnlyArray<ColumnType>): boolean => {
-  const parties = tableName.split('_');
-
-  if (parties.length !== 2) {
-    return false;
-  }
-
-  for (const partyName of parties) {
-    const party = columns.find((column) => {
-      return column.name === partyName + '_id';
-    });
-
-    if (!party) {
-      return false;
-    }
-  }
-
-  return true;
+const createLoaderByIdsDeclaration = (loaderName: string, tableName: string, keyColumnName, columnSelector: string, resultIsArray: boolean) => {
+  return `const ${loaderName} = new DataLoader((ids) => {
+  return getByIds(connection, '${tableName}', ids, '${keyColumnName}', '${columnSelector}', ${String(resultIsArray)}, NotFoundError);
+});`;
 };
 
-const createColumnSelector = (columns: $ReadOnlyArray<ColumnType>, alias: ?string): string => {
-  const selectorAlias = alias ? alias + '.' : '';
-
-  return columns
-    .map((column) => {
-      const normalizedColumnName = camelCase(column.name);
-
-      return column.name === normalizedColumnName ? selectorAlias + '"' + normalizedColumnName + '"' : selectorAlias + '"' + column.name + '" "' + normalizedColumnName + '"';
-    })
-    .join(', ');
+const createLoaderByIdsUsingJoiningTableDeclaration = (
+  loaderName: string,
+  joiningTableName: string,
+  targetResourceTableName: string,
+  joiningKeyName: string,
+  lookupKeyName: string,
+  columnSelector: string
+) => {
+  return `const ${loaderName} = new DataLoader((ids) => {
+  return getByIdsUsingJoiningTable(connection, '${joiningTableName}', '${targetResourceTableName}', '${joiningKeyName}', '${lookupKeyName}', '${columnSelector}', ids);
+});`;
 };
 
 // eslint-disable-next-line complexity
@@ -71,74 +58,12 @@ export default (
     });
 
     if (tableColumns.length === 0) {
-      // eslint-disable-next-line no-continue
       continue;
     }
 
     const mappedTableName = tableColumns[0].mappedTableName;
 
     const resouceName = upperFirst(camelCase(mappedTableName));
-
-    if (isJoiningTable(tableName, columns)) {
-      const parties = tableName.split('_');
-
-      if (parties.length !== 2) {
-        throw new Error('Unexpected state.');
-      }
-
-      const relations = [
-        {
-          key: parties[0],
-          resource: parties[1]
-        },
-        {
-          key: parties[1],
-          resource: parties[0]
-        }
-      ];
-
-      for (const relation of relations) {
-        const loaderName = pluralize(relation.resource) + 'By' + upperFirst(camelCase(relation.key + '_id')) + 'Loader';
-
-        const resourceTableColumns = columns.filter((column) => {
-          return column.mappedTableName === relation.resource;
-        });
-
-        const realResourceTableName = resourceTableColumns[0].tableName;
-
-        const tableColumnSelector = createColumnSelector(resourceTableColumns, 'r2');
-
-        loaders.push(
-          `const ${loaderName} = new DataLoader((ids) => {
-  return getByIdsUsingJoiningTable(connection, '${tableName}', '${realResourceTableName}', '${relation.resource}', '${relation.key}', '${tableColumnSelector}', ids);
-});`
-        );
-
-        const keyColumn = tableColumns.find((column) => {
-          return column.name === relation.key + '_id';
-        });
-
-        if (!keyColumn) {
-          throw new Error('Unexpected state.');
-        }
-
-        let keyType: 'number' | 'string';
-
-        if (isNumberType(keyColumn.dataType)) {
-          keyType = 'number';
-        } else if (isStringType(keyColumn.dataType)) {
-          keyType = 'string';
-        } else {
-          throw new Error('Unexpected state.');
-        }
-
-        const loaderType = '+' + loaderName + ': DataLoader<' + keyType + ', $ReadOnlyArray<' + formatTypeName(relation.resource) + '>>';
-
-        loaderTypes.push(loaderType);
-
-        loaderNames.push(loaderName);
-      }
-    }
 
     for (const tableColumn of tableColumns) {
       const tableColumnSelector = createColumnSelector(tableColumns);
@@ -147,22 +72,10 @@ export default (
         const loaderName = pluralize(resouceName) + 'By' + upperFirst(camelCase(tableColumn.name)) + 'Loader';
 
         loaders.push(
-          `const ${loaderName} = new DataLoader((ids) => {
-  return getByIds(connection, '${tableName}', ids, '${tableColumn.name}', '${tableColumnSelector}', true);
-});`
+          createLoaderByIdsDeclaration(loaderName, tableName, tableColumn.name, tableColumnSelector, true)
         );
 
-        let keyType: 'number' | 'string';
-
-        if (isNumberType(tableColumn.dataType)) {
-          keyType = 'number';
-        } else if (isStringType(tableColumn.dataType)) {
-          keyType = 'string';
-        } else {
-          throw new Error('Unexpected state.');
-        }
-
-        const loaderType = '+' + loaderName + ': DataLoader<' + keyType + ', $ReadOnlyArray<' + formatTypeName(tableColumn.mappedTableName) + '>>';
+        const loaderType = createLoaderTypePropertyDeclaration(loaderName, tableColumn, tableColumn.mappedTableName, true);
 
         loaderTypes.push(loaderType);
 
@@ -194,22 +107,85 @@ export default (
       const loaderName = resouceName + 'By' + upperFirst(camelCase(indexColumn.name)) + 'Loader';
 
       loaders.push(
-        `const ${loaderName} = new DataLoader((ids) => {
-  return getByIds(connection, '${tableName}', ids, '${indexColumn.name}', '${tableColumnSelector}', false, NotFoundError);
-});`
+        createLoaderByIdsDeclaration(loaderName, tableName, indexColumn.name, tableColumnSelector, false)
       );
 
-      let keyType: 'number' | 'string';
+      const loaderType = createLoaderTypePropertyDeclaration(loaderName, indexColumn, indexColumn.mappedTableName, false);
 
-      if (isNumberType(indexColumn.dataType)) {
-        keyType = 'number';
-      } else if (isStringType(indexColumn.dataType)) {
-        keyType = 'string';
-      } else {
+      loaderTypes.push(loaderType);
+
+      loaderNames.push(loaderName);
+    }
+  }
+
+  for (const tableName of tableNames) {
+    const tableColumns = columns.filter((column) => {
+      return column.tableName === tableName;
+    });
+
+    if (tableColumns.length === 0) {
+      continue;
+    }
+
+    if (!isJoiningTable(tableName, tableColumns)) {
+      continue;
+    }
+
+    const firstIdColumnNames = tableColumns
+      .map((column) => {
+        return column.name;
+      })
+      .filter((columnName) => {
+        return columnName.endsWith('_id');
+      })
+      .map((columnName) => {
+        return columnName.slice(0, -3);
+      })
+      .slice(0, 2);
+
+    if (firstIdColumnNames.length < 2) {
+      throw new Error('Unexpected state.');
+    }
+
+    const relations = [
+      {
+        key: firstIdColumnNames[0],
+        resource: firstIdColumnNames[1]
+      },
+      {
+        key: firstIdColumnNames[1],
+        resource: firstIdColumnNames[0]
+      }
+    ];
+
+    for (const relation of relations) {
+      const loaderName = upperFirst(camelCase(pluralizeTableName(relation.resource))) + 'By' + upperFirst(camelCase(relation.key + '_id')) + 'Loader';
+
+      if (loaderNames.includes(loaderName)) {
+        continue;
+      }
+
+      const resourceTableColumns = columns.filter((column) => {
+        return column.mappedTableName === relation.resource;
+      });
+
+      const realResourceTableName = resourceTableColumns[0].tableName;
+
+      const tableColumnSelector = createColumnSelector(resourceTableColumns, 'r2');
+
+      loaders.push(
+        createLoaderByIdsUsingJoiningTableDeclaration(loaderName, tableName, realResourceTableName, relation.resource, relation.key, tableColumnSelector)
+      );
+
+      const keyColumn = tableColumns.find((column) => {
+        return column.name === relation.key + '_id';
+      });
+
+      if (!keyColumn) {
         throw new Error('Unexpected state.');
       }
 
-      const loaderType = '+' + loaderName + ': DataLoader<' + keyType + ', ' + formatTypeName(indexColumn.mappedTableName) + '>';
+      const loaderType = createLoaderTypePropertyDeclaration(loaderName, keyColumn, relation.resource, true);
 
       loaderTypes.push(loaderType);
 

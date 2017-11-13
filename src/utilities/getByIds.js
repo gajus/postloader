@@ -18,7 +18,7 @@ export default async (
   ids: $ReadOnlyArray<string | number>,
   idName: string = 'id',
   columnSelector: string,
-  multiple: boolean,
+  resultIsArray: boolean,
   NotFoundError: Class<Error>
 ): Promise<$ReadOnlyArray<any>> => {
   let rows = [];
@@ -33,7 +33,7 @@ export default async (
 
   const targetPropertyName = camelCase(idName);
 
-  if (multiple) {
+  if (resultIsArray) {
     for (const id of ids) {
       const result = rows.filter((row) => {
         return row[targetPropertyName] === id;

@@ -9,6 +9,7 @@
 A scaffolding tool for projects using [DataLoader](https://github.com/facebook/dataloader), [Flow](https://flow.org/) and [PostgreSQL](https://www.postgresql.org/).
 
 * [Motivation](#motivation)
+  * [What makes this different from using an ORM?](#what-makes-this-different-from-using-an-orm)
 * [Behaviour](#behaviour)
   * [Unique key loader](#unique-key-loader)
   * [Non-unique `_id` loaders](#non-unique-id-loader)
@@ -31,6 +32,11 @@ PostLoader solves both of these problems by:
 
 1. Creating type declarations for all database tables.
 1. Creating loaders for the most common lookups.
+
+### What makes this different from using an ORM?
+
+1. ORM is not going to give you strict types and code completion.
+1. ORM has runtime overhead for constructing the queries and formatting the results.
 
 ## Behaviour
 
