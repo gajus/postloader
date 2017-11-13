@@ -1,5 +1,6 @@
 // @flow
 
 export {
-  getByIds
+  getByIds,
+  getByIdsUsingJoiningTable
 } from './utilities';
