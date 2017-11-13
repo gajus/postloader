@@ -11,6 +11,7 @@ A scaffolding tool for projects using [DataLoader](https://github.com/facebook/d
 * [Motivation](#motivation)
 * [Behaviour](#behaviour)
   * [Unique key loader](#unique-key-loader)
+  * [Non-unique `_id` loaders](#non-unique-id-loader)
 * [Naming conventions](#naming-conventions)
   * [Type names](#type-names)
   * [Property names](#property-names)
@@ -44,9 +45,9 @@ The generated code consists of:
 
 A loader is created for every column in a unique index ([unique indexes including multiple columns are not supported](https://github.com/gajus/postloader/issues/1)), e.g. `UserByIdLoader`.
 
-### Non-unique foreign-key loaders
+### Non-unique `_id` loader
 
-A loader is created for every column that has a foreign-key constraint.
+A loader is created for every column that has name ending with `_id`.
 
 A non-unique loader is used to return multiple rows per lookup, e.g. `CitiesByCountryIdLoader`. The underlying data in this example comes from a table named "city". PostLoader is using [`pluralize`](https://www.npmjs.com/package/pluralize) module to pluralize the table name.
 
