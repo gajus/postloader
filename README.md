@@ -224,3 +224,31 @@ COMMENT ON COLUMN user.created_at IS 'POSTLOAD_NOTNULL';
 COMMENT ON COLUMN user.pseudonym IS 'POSTLOAD_NOTNULL';
 
 ```
+
+Alternatively, update the `pg_attribute.attnotnull` value of the target columns, e.g.
+
+```sql
+CREATE OR REPLACE FUNCTION set_attribute_not_null(view_name TEXT, column_names TEXT[])
+RETURNS void AS
+$$
+BEGIN
+  UPDATE pg_catalog.pg_attribute
+  SET attnotnull = true
+  WHERE attrelid IN (
+    SELECT
+      pa1.attrelid
+    FROM pg_class pc1
+    INNER JOIN pg_namespace pn1 ON pn1.oid = pc1.relnamespace
+    INNER JOIN pg_attribute pa1 ON pa1.attrelid = pc1.oid AND pa1.attnum > 0 AND NOT pa1.attisdropped
+    WHERE
+      pn1.nspname = 'public' AND
+      pc1.relkind = 'm' AND
+      pc1.relname = view_name AND
+      pa1.attname = ANY(column_names)
+  );
+END;
+$$ language 'plpgsql';
+
+set_attribute_not_null('person_view', ARRAY['id', 'imdb_id', 'tmdb_id', 'headshot_image_name', 'name']);
+
+```
