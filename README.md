@@ -51,6 +51,41 @@ A loader is created for every column that has name ending with `_id`.
 
 A non-unique loader is used to return multiple rows per lookup, e.g. `CitiesByCountryIdLoader`. The underlying data in this example comes from a table named "city". PostLoader is using [`pluralize`](https://www.npmjs.com/package/pluralize) module to pluralize the table name.
 
+### Non-unique joining table loader
+
+A loader is created for every resource discoverable via a joining table.
+
+1. A joining table consists of at least 2 columns that have names ending `_id`.
+1. The table name is a concatenation of the column names (without `_id` suffix) (in alphabetical order, i.e. `genre_movie`, not `movie_genre`).
+
+#### Example
+
+Assume a many-to-many relationship of movies and genres:
+
+```sql
+CREATE TABLE movie (
+  id integer NOT NULL,
+  name text
+);
+
+CREATE TABLE venue (
+  id integer NOT NULL,
+  name text
+);
+
+CREATE TABLE genre_movie (
+  id integer NOT NULL,
+  genre_id integer NOT NULL,
+  movie_id integer NOT NULL
+);
+
+```
+
+Provided the above schema, PostLoader will create two non-unique loaders:
+
+* `MoviesByGenreIdLoader`
+* `GenresByMovieIdLoader`
+
 ## Naming conventions
 
 ### Type names

@@ -15,12 +15,35 @@ import indent from './indent';
 import isNumberType from './isNumberType';
 import isStringType from './isStringType';
 
-const createColumnSelector = (columns: $ReadOnlyArray<ColumnType>): string => {
+// @todo Support multi-word joinign tables.
+const isJoiningTable = (tableName: string, columns: $ReadOnlyArray<ColumnType>): boolean => {
+  const parties = tableName.split('_');
+
+  if (parties.length !== 2) {
+    return false;
+  }
+
+  for (const partyName of parties) {
+    const party = columns.find((column) => {
+      return column.name === partyName + '_id';
+    });
+
+    if (!party) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+const createColumnSelector = (columns: $ReadOnlyArray<ColumnType>, alias: ?string): string => {
+  const selectorAlias = alias ? alias + '.' : '';
+
   return columns
     .map((column) => {
       const normalizedColumnName = camelCase(column.name);
 
-      return column.name === normalizedColumnName ? '"' + normalizedColumnName + '"' : '"' + column.name + '" "' + normalizedColumnName + '"';
+      return column.name === normalizedColumnName ? selectorAlias + '"' + normalizedColumnName + '"' : selectorAlias + '"' + column.name + '" "' + normalizedColumnName + '"';
     })
     .join(', ');
 };
@@ -56,9 +79,70 @@ export default (
 
     const resouceName = upperFirst(camelCase(mappedTableName));
 
-    const tableColumnSelector = createColumnSelector(tableColumns);
+    if (isJoiningTable(tableName, columns)) {
+      const parties = tableName.split('_');
+
+      if (parties.length !== 2) {
+        throw new Error('Unexpected state.');
+      }
+
+      const relations = [
+        {
+          key: parties[0],
+          resource: parties[1]
+        },
+        {
+          key: parties[1],
+          resource: parties[0]
+        }
+      ];
+
+      for (const relation of relations) {
+        const loaderName = pluralize(relation.resource) + 'By' + upperFirst(camelCase(relation.key + '_id')) + 'Loader';
+
+        const resourceTableColumns = columns.filter((column) => {
+          return column.mappedTableName === relation.resource;
+        });
+
+        const realResourceTableName = resourceTableColumns[0].tableName;
+
+        const tableColumnSelector = createColumnSelector(resourceTableColumns, 'r2');
+
+        loaders.push(
+          `const ${loaderName} = new DataLoader((ids) => {
+  return getByIdsUsingJoiningTable(connection, '${tableName}', '${realResourceTableName}', '${relation.resource}', '${relation.key}', '${tableColumnSelector}', ids);
+});`
+        );
+
+        const keyColumn = tableColumns.find((column) => {
+          return column.name === relation.key + '_id';
+        });
+
+        if (!keyColumn) {
+          throw new Error('Unexpected state.');
+        }
+
+        let keyType: 'number' | 'string';
+
+        if (isNumberType(keyColumn.dataType)) {
+          keyType = 'number';
+        } else if (isStringType(keyColumn.dataType)) {
+          keyType = 'string';
+        } else {
+          throw new Error('Unexpected state.');
+        }
+
+        const loaderType = '+' + loaderName + ': DataLoader<' + keyType + ', $ReadOnlyArray<' + formatTypeName(relation.resource) + '>>';
+
+        loaderTypes.push(loaderType);
+
+        loaderNames.push(loaderName);
+      }
+    }
 
     for (const tableColumn of tableColumns) {
+      const tableColumnSelector = createColumnSelector(tableColumns);
+
       if (tableColumn.name.endsWith('_id')) {
         const loaderName = pluralize(resouceName) + 'By' + upperFirst(camelCase(tableColumn.name)) + 'Loader';
 
@@ -91,6 +175,8 @@ export default (
     });
 
     for (const tableUniqueIndex of tableUniqueIndexes) {
+      const tableColumnSelector = createColumnSelector(tableColumns);
+
       const maybeIndexColumnName = tableUniqueIndex.columnNames[0];
 
       if (!maybeIndexColumnName) {
@@ -142,7 +228,8 @@ export default (
   return `// @flow
 
 import {
-  getByIds
+  getByIds,
+  getByIdsUsingJoiningTable
 } from 'postloader';
 import DataLoader from 'dataloader';
 import type {
