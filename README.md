@@ -13,6 +13,7 @@ A scaffolding tool for projects using [DataLoader](https://github.com/facebook/d
 * [Behaviour](#behaviour)
   * [Unique key loader](#unique-key-loader)
   * [Non-unique `_id` loaders](#non-unique-id-loader)
+  * [Non-unique joining table loader](#non-unique-joining-table-loader)
 * [Naming conventions](#naming-conventions)
   * [Type names](#type-names)
   * [Property names](#property-names)
