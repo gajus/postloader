@@ -12,14 +12,12 @@ export default async (connection: DatabaseConnectionType): Promise<$ReadOnlyArra
   return connection.any(sql`
     SELECT
       pc1.relname "tableName",
-      pa1.attnum,
       pa1.attname "name",
       pd1.description "comment",
       pg_catalog.format_type (pa1.atttypid, NULL) "dataType",
       pc1.relkind = 'm' "isMaterializedView",
       NOT(pa1.attnotnull) "isNullable"
-    FROM
-      pg_class pc1
+    FROM pg_class pc1
     INNER JOIN pg_namespace pn1 ON pn1.oid = pc1.relnamespace
     INNER JOIN
       pg_attribute pa1 ON pa1.attrelid = pc1.oid
