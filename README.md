@@ -132,7 +132,8 @@ This generates a file containing a factory function used to construct a DataLoad
 // @flow
 
 import {
-  getByIds
+  getByIds,
+  getByIdsUsingJoiningTable
 } from 'postloader';
 import DataLoader from 'dataloader';
 import type {
@@ -154,19 +155,25 @@ export type UserRecordType = {|
 
 export type LoadersType = {|
   +UserByIdLoader: DataLoader<number, UserRecordType>,
+  +UsersByAffiliateIdLoader: DataLoader<number, $ReadOnlyArray<UserRecordType>>,
+  // [..]
 |};
 
 // [..]
 
-export const createLoaders = (connection: DatabaseConnectionType) => {
+export const createLoaders = (connection: DatabaseConnectionType, NotFoundError: Error) => {
   const UserByIdLoader = new DataLoader((ids) => {
-    return getByIds(connection, 'user', ids, 'id', '"id", "email", "given_name" "givenName", "family_name" "familyName", "password", "created_at" "createdAt", "updated_at" "updatedAt", "pseudonym"');
+    return getByIds(connection, 'user', ids, 'id', '"id", "email", "given_name" "givenName", "family_name" "familyName", "password", "created_at" "createdAt", "updated_at" "updatedAt", "pseudonym"', false, NotFoundError);
+  });
+  const UsersByAffiliateIdLoader = new DataLoader((ids) => {
+    return getByIdsUsingJoiningTable(connection, 'affiliate_user', 'user', 'user', 'affiliate', 'r2."id", r2."email", r2."given_name" "givenName", r2."family_name" "familyName", r2."password", r2."created_at" "createdAt", r2."updated_at" "updatedAt", r2."pseudonym"', ids);
   });
 
   // [..]
 
   return {
     UserByIdLoader,
+    UsersByAffiliateIdLoader,
     // [..]
   };
 };
