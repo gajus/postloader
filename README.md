@@ -34,6 +34,8 @@ PostLoader solves both of these problems by:
 1. Creating type declarations for all database tables.
 1. Creating loaders for the most common lookups.
 
+If you are interested to learn more, I have written an article on the subject: [I reduced GraphQL codebase size by 40% and increased type coverage to 90%+. Using code generation to create data loaders for all database resources.](https://medium.com/@gajus/i-reduced-graphql-codebase-size-by-40-and-increased-type-coverage-to-90-a2c87fdc78d3).
+
 ### What makes this different from using an ORM?
 
 1. ORM is not going to give you strict types and code completion.
