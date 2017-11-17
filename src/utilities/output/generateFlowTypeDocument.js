@@ -5,10 +5,10 @@ import {
 } from 'lodash';
 import type {
   ColumnType
-} from '../types';
+} from '../../types';
+import formatTypeName from '../formatTypeName';
+import formatPropertyName from '../formatPropertyName';
 import getFlowType from './getFlowType';
-import formatTypeName from './formatTypeName';
-import formatPropertyName from './formatPropertyName';
 
 const generateFlowTypeDeclarationBody = (columns: $ReadOnlyArray<ColumnType>): string => {
   const sortedColumns = sortBy(columns, 'column_name');

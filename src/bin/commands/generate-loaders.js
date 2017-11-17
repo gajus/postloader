@@ -4,7 +4,8 @@ import {
   createConnection
 } from 'slonik';
 import type {
-  ColumnType
+  ColumnType,
+  OutputType
 } from '../../types';
 import {
   getDatabaseColumns,
@@ -20,7 +21,8 @@ export const desc = '';
 type ConfigurationType = {|
   +columnFilter: string | null,
   +databaseConnectionUri: string,
-  +tableNameMapper: string | null
+  +tableNameMapper: string | null,
+  +output: OutputType
 |};
 
 export const builder = (yargs: *): void => {
@@ -32,6 +34,12 @@ export const builder = (yargs: *): void => {
       },
       'database-connection-uri': {
         demand: true
+      },
+      output: {
+        choices: ['flow', 'typescript'],
+        default: 'flow',
+        description: 'Choose whether flow or typescript definitions are generated',
+        type: 'string'
       },
       'table-name-mapper': {
         description: 'Function used to map table names. Function is constructed using `new Function`. Function receives table name as the first parameter and all database columns as the second parameter (parameter names are "tableName" and "columns").',
@@ -82,7 +90,7 @@ export const handler = async (argv: ConfigurationType): Promise<void> => {
   const indexes = await getDatabaseIndexes(connection);
 
   // eslint-disable-next-line no-console
-  console.log(generateDataLoaderFactory(normalizedColumns, indexes));
+  console.log(generateDataLoaderFactory(normalizedColumns, indexes, argv.output));
 
   await connection.end();
 };
