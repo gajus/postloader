@@ -1,11 +1,11 @@
 // @flow
 
-import Logger from '../Logger';
-import isNumberType from './isNumberType';
-import isStringType from './isStringType';
+import Logger from '../../Logger';
+import isNumberType from './../isNumberType';
+import isStringType from './../isStringType';
 
 const log = Logger.child({
-  namespace: 'getFlowType'
+  namespace: 'getTypescriptType'
 });
 
 export default (databaseTypeName: string): string => {

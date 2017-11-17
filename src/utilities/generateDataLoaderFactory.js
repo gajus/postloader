@@ -7,38 +7,22 @@ import {
 } from 'lodash';
 import type {
   ColumnType,
-  IndexType
+  IndexType,
+  OutputType,
+  LoadersType
 } from '../types';
-import generateFlowTypeDocument from './generateFlowTypeDocument';
-import indent from './indent';
 import isJoiningTable from './isJoiningTable';
 import createColumnSelector from './createColumnSelector';
-import createLoaderTypePropertyDeclaration from './createLoaderTypePropertyDeclaration';
 import pluralizeTableName from './pluralizeTableName';
-
-const createLoaderByIdsDeclaration = (loaderName: string, tableName: string, keyColumnName, columnSelector: string, resultIsArray: boolean) => {
-  return `const ${loaderName} = new DataLoader((ids) => {
-  return getByIds(connection, '${tableName}', ids, '${keyColumnName}', '${columnSelector}', ${String(resultIsArray)}, NotFoundError);
-});`;
-};
-
-const createLoaderByIdsUsingJoiningTableDeclaration = (
-  loaderName: string,
-  joiningTableName: string,
-  targetResourceTableName: string,
-  joiningKeyName: string,
-  lookupKeyName: string,
-  columnSelector: string
-) => {
-  return `const ${loaderName} = new DataLoader((ids) => {
-  return getByIdsUsingJoiningTable(connection, '${joiningTableName}', '${targetResourceTableName}', '${joiningKeyName}', '${lookupKeyName}', '${columnSelector}', ids);
-});`;
-};
+import createTypeScript from './output/createTypescript';
+import createFlowType from './output/createFlow';
+import {StandardLoader, ThruJoinLoader} from './output/loader';
 
 // eslint-disable-next-line complexity
 export default (
   columns: $ReadOnlyArray<ColumnType>,
-  indexes: $ReadOnlyArray<IndexType>
+  indexes: $ReadOnlyArray<IndexType>,
+  output: OutputType = 'flow'
 ): string => {
   const tableNames = columns
     .map((column) => {
@@ -48,9 +32,7 @@ export default (
       return self.indexOf(tableName) === index;
     });
 
-  const loaders = [];
-  const loaderNames = [];
-  const loaderTypes = [];
+  const loaders: LoadersType = [];
 
   for (const tableName of tableNames) {
     const tableColumns = columns.filter((column) => {
@@ -63,23 +45,22 @@ export default (
 
     const mappedTableName = tableColumns[0].mappedTableName;
 
-    const resouceName = upperFirst(camelCase(mappedTableName));
+    const resourceName = upperFirst(camelCase(mappedTableName));
 
     for (const tableColumn of tableColumns) {
       const tableColumnSelector = createColumnSelector(tableColumns);
 
       if (tableColumn.name.endsWith('_id')) {
-        const loaderName = pluralize(resouceName) + 'By' + upperFirst(camelCase(tableColumn.name)) + 'Loader';
+        const loaderName = pluralize(resourceName) + 'By' + upperFirst(camelCase(tableColumn.name)) + 'Loader';
 
-        loaders.push(
-          createLoaderByIdsDeclaration(loaderName, tableName, tableColumn.name, tableColumnSelector, true)
-        );
-
-        const loaderType = createLoaderTypePropertyDeclaration(loaderName, tableColumn, tableColumn.mappedTableName, true);
-
-        loaderTypes.push(loaderType);
-
-        loaderNames.push(loaderName);
+        loaders.push(new StandardLoader({
+          columnSelector: tableColumnSelector,
+          keyColumn: tableColumn,
+          name: loaderName,
+          resourceName,
+          resultIsArray: true,
+          tableName
+        }));
       }
     }
 
@@ -88,8 +69,6 @@ export default (
     });
 
     for (const tableUniqueIndex of tableUniqueIndexes) {
-      const tableColumnSelector = createColumnSelector(tableColumns);
-
       const maybeIndexColumnName = tableUniqueIndex.columnNames[0];
 
       if (!maybeIndexColumnName) {
@@ -104,17 +83,16 @@ export default (
         throw new Error('Unexpected state.');
       }
 
-      const loaderName = resouceName + 'By' + upperFirst(camelCase(indexColumn.name)) + 'Loader';
+      const loaderName = resourceName + 'By' + upperFirst(camelCase(indexColumn.name)) + 'Loader';
 
-      loaders.push(
-        createLoaderByIdsDeclaration(loaderName, tableName, indexColumn.name, tableColumnSelector, false)
-      );
-
-      const loaderType = createLoaderTypePropertyDeclaration(loaderName, indexColumn, indexColumn.mappedTableName, false);
-
-      loaderTypes.push(loaderType);
-
-      loaderNames.push(loaderName);
+      loaders.push(new StandardLoader({
+        columnSelector: createColumnSelector(tableColumns),
+        keyColumn: indexColumn,
+        name: loaderName,
+        resourceName: indexColumn.mappedTableName,
+        resultIsArray: false,
+        tableName
+      }));
     }
   }
 
@@ -161,7 +139,9 @@ export default (
     for (const relation of relations) {
       const loaderName = upperFirst(camelCase(pluralizeTableName(relation.resource))) + 'By' + upperFirst(camelCase(relation.key + '_id')) + 'Loader';
 
-      if (loaderNames.includes(loaderName)) {
+      if (loaders.find((loader) => {
+        return loader.loaderName === loaderName;
+      })) {
         continue;
       }
 
@@ -171,12 +151,6 @@ export default (
 
       const realResourceTableName = resourceTableColumns[0].tableName;
 
-      const tableColumnSelector = createColumnSelector(resourceTableColumns, 'r2');
-
-      loaders.push(
-        createLoaderByIdsUsingJoiningTableDeclaration(loaderName, tableName, realResourceTableName, relation.resource, relation.key, tableColumnSelector)
-      );
-
       const keyColumn = tableColumns.find((column) => {
         return column.name === relation.key + '_id';
       });
@@ -185,53 +159,28 @@ export default (
         throw new Error('Unexpected state.');
       }
 
-      const loaderType = createLoaderTypePropertyDeclaration(loaderName, keyColumn, relation.resource, true);
-
-      loaderTypes.push(loaderType);
-
-      loaderNames.push(loaderName);
+      loaders.push(new ThruJoinLoader({
+        columnSelector: createColumnSelector(resourceTableColumns, 'r2'),
+        joiningKeyColumn: keyColumn,
+        joiningTableName: tableName,
+        lookupKeyName: relation.key,
+        name: loaderName,
+        resourceName: realResourceTableName,
+        targetTableName: realResourceTableName
+      }));
     }
   }
 
-  loaderTypes.sort((a, b) => {
-    return a.localeCompare(b);
+  loaders.sort((a, b) => {
+    return a.loaderName.localeCompare(b.loaderName);
   });
 
-  loaderNames.sort((a, b) => {
-    return a.localeCompare(b);
-  });
-
-  return `// @flow
-
-import {
-  getByIds,
-  getByIdsUsingJoiningTable
-} from 'postloader';
-import DataLoader from 'dataloader';
-import type {
-  DatabaseConnectionType
-} from 'slonik';
-${generateFlowTypeDocument(columns)}
-
-export type LoadersType = {|
-${loaderTypes.map((body) => {
-    return indent(body, 2);
-  }).join(',\n')}
-|};
-
-export const createLoaders = (connection: DatabaseConnectionType, NotFoundError: Class<Error>): LoadersType => {
-${loaders
-    .map((body) => {
-      return indent(body, 2);
-    })
-    .join('\n')}
-
-  return {
-${loaderNames
-    .map((body) => {
-      return indent(body, 4);
-    })
-    .join(',\n')}
-  };
-};`;
+  switch (output) {
+  case 'flow':
+    return createFlowType(columns, loaders);
+  case 'typescript':
+    return createTypeScript(columns, loaders);
+  default:
+    throw new Error(`Invalid output type - expected flow or typescript, got ${output}`);
+  }
 };
