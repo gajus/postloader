@@ -10,12 +10,17 @@ import type {
   DataTypeMapType,
   IndexType
 } from '../types';
+import Logger from '../Logger';
 import generateFlowTypeDocument from './generateFlowTypeDocument';
 import indent from './indent';
 import isJoiningTable from './isJoiningTable';
 import createColumnSelector from './createColumnSelector';
 import createLoaderTypePropertyDeclaration from './createLoaderTypePropertyDeclaration';
 import pluralizeTableName from './pluralizeTableName';
+
+const log = Logger.child({
+  namespace: 'generateDataLoaderFactory'
+});
 
 const createLoaderByIdsDeclaration = (loaderName: string, tableName: string, keyColumnName, columnSelector: string, resultIsArray: boolean) => {
   return `const ${loaderName} = new DataLoader((ids) => {
@@ -176,6 +181,14 @@ export default (
       const resourceTableColumns = columns.filter((column) => {
         return column.mappedTableName === relation.resource;
       });
+
+      if (!resourceTableColumns.length) {
+        log.warn({
+          relation
+        }, 'resource without columns');
+
+        continue;
+      }
 
       const realResourceTableName = resourceTableColumns[0].tableName;
 
