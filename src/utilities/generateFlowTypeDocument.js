@@ -22,9 +22,7 @@ const generateFlowTypeDeclarationBody = (columns: $ReadOnlyArray<ColumnType>): s
   return propertyDeclarations.join('\n');
 };
 
-export default (
-  columns: $ReadOnlyArray<ColumnType>
-): string => {
+export default (columns: $ReadOnlyArray<ColumnType>): string => {
   const tableNames = columns
     .map((column) => {
       return column.mappedTableName;

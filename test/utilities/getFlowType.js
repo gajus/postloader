@@ -21,7 +21,7 @@ test('correctly maps known types', (t) => {
     const flowType = knownTypes[databaseTypeName];
 
     if (typeof flowType !== 'string') {
-      throw new TypeError();
+      throw new TypeError('Unexpected type');
     }
 
     t.true(getFlowType(databaseTypeName) === flowType, flowType);

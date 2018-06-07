@@ -14,14 +14,17 @@ import {
   generateDataLoaderFactory
 } from '../../utilities';
 
-export const command = 'generate-loaders';
-export const desc = '';
-
 type ConfigurationType = {|
   +columnFilter: string | null,
   +databaseConnectionUri: string,
   +tableNameMapper: string | null
 |};
+
+type ColumnFilterType = (tableName: string, columnName: string, columns: $ReadOnlyArray<ColumnType>) => boolean;
+type TableNameMapperType = (tableName: string, columns: $ReadOnlyArray<ColumnType>) => string;
+
+export const command = 'generate-loaders';
+export const desc = '';
 
 export const builder = (yargs: *): void => {
   yargs
@@ -39,9 +42,6 @@ export const builder = (yargs: *): void => {
       }
     });
 };
-
-type ColumnFilterType = (tableName: string, columnName: string, columns: $ReadOnlyArray<ColumnType>) => boolean;
-type TableNameMapperType = (tableName: string, columns: $ReadOnlyArray<ColumnType>) => string;
 
 export const handler = async (argv: ConfigurationType): Promise<void> => {
   // eslint-disable-next-line no-extra-parens, no-new-func

@@ -71,9 +71,7 @@ export default (
       if (tableColumn.name.endsWith('_id')) {
         const loaderName = pluralize(resouceName) + 'By' + upperFirst(camelCase(tableColumn.name)) + 'Loader';
 
-        loaders.push(
-          createLoaderByIdsDeclaration(loaderName, tableName, tableColumn.name, tableColumnSelector, true)
-        );
+        loaders.push(createLoaderByIdsDeclaration(loaderName, tableName, tableColumn.name, tableColumnSelector, true));
 
         const loaderType = createLoaderTypePropertyDeclaration(loaderName, tableColumn, tableColumn.mappedTableName, true);
 
@@ -106,9 +104,7 @@ export default (
 
       const loaderName = resouceName + 'By' + upperFirst(camelCase(indexColumn.name)) + 'Loader';
 
-      loaders.push(
-        createLoaderByIdsDeclaration(loaderName, tableName, indexColumn.name, tableColumnSelector, false)
-      );
+      loaders.push(createLoaderByIdsDeclaration(loaderName, tableName, indexColumn.name, tableColumnSelector, false));
 
       const loaderType = createLoaderTypePropertyDeclaration(loaderName, indexColumn, indexColumn.mappedTableName, false);
 
@@ -173,9 +169,7 @@ export default (
 
       const tableColumnSelector = createColumnSelector(resourceTableColumns, 'r2');
 
-      loaders.push(
-        createLoaderByIdsUsingJoiningTableDeclaration(loaderName, tableName, realResourceTableName, relation.resource, relation.key, tableColumnSelector)
-      );
+      loaders.push(createLoaderByIdsUsingJoiningTableDeclaration(loaderName, tableName, realResourceTableName, relation.resource, relation.key, tableColumnSelector));
 
       const keyColumn = tableColumns.find((column) => {
         return column.name === relation.key + '_id';

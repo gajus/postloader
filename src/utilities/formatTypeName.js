@@ -5,8 +5,6 @@ import {
   upperFirst
 } from 'lodash';
 
-export default (
-  tableName: string
-): string => {
+export default (tableName: string): string => {
   return upperFirst(camelCase(tableName)) + 'RecordType';
 };
