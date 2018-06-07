@@ -123,7 +123,7 @@ Table name is camel cased, the first letter is uppercased, suffixed with "By" co
 export POSTLOADER_DATABASE_CONNECTION_URI=postgres://postgres:password@127.0.0.1/test
 export POSTLOADER_COLUMN_FILTER="return /* exclude tables that have a _view */ !columns.map(column => column.tableName).includes(tableName + '_view')"
 export POSTLOADER_TABLE_NAME_MAPPER="return tableName.endsWith('_view') ? tableName.slice(0, -5) : tableName;"
-export POSTLOADER_DATA_TYPE_MAP="{\"email\":\"string\"}"
+export POSTLOADER_DATA_TYPE_MAP="{\"email\":\"text\"}"
 
 postloader generate-loaders > ./PostLoader.js
 
