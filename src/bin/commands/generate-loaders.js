@@ -4,7 +4,8 @@ import {
   createConnection
 } from 'slonik';
 import type {
-  ColumnType
+  ColumnType,
+  DataTypeMapType
 } from '../../types';
 import {
   getDatabaseColumns,
@@ -14,10 +15,11 @@ import {
   generateDataLoaderFactory
 } from '../../utilities';
 
-type ConfigurationType = {|
-  +columnFilter: string | null,
+type ArgvType = {|
+  +columnFilter?: string,
+  +dataTypeMap?: string,
   +databaseConnectionUri: string,
-  +tableNameMapper: string | null
+  +tableNameMapper?: string
 |};
 
 type ColumnFilterType = (tableName: string, columnName: string, columns: $ReadOnlyArray<ColumnType>) => boolean;
@@ -26,11 +28,15 @@ type TableNameMapperType = (tableName: string, columns: $ReadOnlyArray<ColumnTyp
 export const command = 'generate-loaders';
 export const desc = '';
 
-export const builder = (yargs: *): void => {
+export const builder = (yargs: Object): void => {
   yargs
     .options({
       'column-filter': {
         description: 'Function used to filter columns. Function is constructed using `new Function`. Function receives table name as the first parameter, column name as the second parameter and all database columns as the third parameter (parameter names are "tableName", "columnName" and "columns").',
+        type: 'string'
+      },
+      'data-type-map': {
+        description: 'A JSON string describing an object mapping user-defined database types to Flow types, e.g. {"email": "string"}',
         type: 'string'
       },
       'database-connection-uri': {
@@ -43,12 +49,14 @@ export const builder = (yargs: *): void => {
     });
 };
 
-export const handler = async (argv: ConfigurationType): Promise<void> => {
+export const handler = async (argv: ArgvType): Promise<void> => {
   // eslint-disable-next-line no-extra-parens, no-new-func
   const filterColumn: ColumnFilterType = (argv.columnFilter ? new Function('tableName', 'columnName', 'columns', argv.columnFilter) : null: any);
 
   // eslint-disable-next-line no-extra-parens, no-new-func
   const mapTableName: TableNameMapperType = (argv.tableNameMapper ? new Function('tableName', 'columns', argv.tableNameMapper) : null: any);
+
+  const dataTypeMap: DataTypeMapType = argv.dataTypeMap ? JSON.parse(argv.dataTypeMap) : {};
 
   const connection = await createConnection(argv.databaseConnectionUri);
 
@@ -82,7 +90,7 @@ export const handler = async (argv: ConfigurationType): Promise<void> => {
   const indexes = await getDatabaseIndexes(connection);
 
   // eslint-disable-next-line no-console
-  console.log(generateDataLoaderFactory(normalizedColumns, indexes));
+  console.log(generateDataLoaderFactory(normalizedColumns, indexes, dataTypeMap));
 
   await connection.end();
 };

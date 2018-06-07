@@ -4,6 +4,10 @@ export type {
   DatabaseConnectionType
 } from 'slonik';
 
+export type DataTypeMapType = {
+  +[key: string]: string
+};
+
 export type ColumnType = {|
   +comment: string | null,
   +dataType: string,

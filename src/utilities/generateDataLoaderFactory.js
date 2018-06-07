@@ -7,6 +7,7 @@ import {
 } from 'lodash';
 import type {
   ColumnType,
+  DataTypeMapType,
   IndexType
 } from '../types';
 import generateFlowTypeDocument from './generateFlowTypeDocument';
@@ -38,7 +39,8 @@ const createLoaderByIdsUsingJoiningTableDeclaration = (
 // eslint-disable-next-line complexity
 export default (
   columns: $ReadOnlyArray<ColumnType>,
-  indexes: $ReadOnlyArray<IndexType>
+  indexes: $ReadOnlyArray<IndexType>,
+  dataTypeMap: DataTypeMapType,
 ): string => {
   const tableNames = columns
     .map((column) => {
@@ -205,7 +207,7 @@ import DataLoader from 'dataloader';
 import type {
   DatabaseConnectionType
 } from 'slonik';
-${generateFlowTypeDocument(columns)}
+${generateFlowTypeDocument(columns, dataTypeMap)}
 
 export type LoadersType = {|
 ${loaderTypes.map((body) => {
