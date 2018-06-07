@@ -75,7 +75,12 @@ export default (
 
         loaders.push(createLoaderByIdsDeclaration(loaderName, tableName, tableColumn.name, tableColumnSelector, true));
 
-        const loaderType = createLoaderTypePropertyDeclaration(loaderName, tableColumn, tableColumn.mappedTableName, true);
+        const loaderType = createLoaderTypePropertyDeclaration(
+          loaderName,
+          dataTypeMap[tableColumn.dataType] ? dataTypeMap[tableColumn.dataType] : tableColumn.dataType,
+          tableColumn.mappedTableName,
+          true
+        );
 
         loaderTypes.push(loaderType);
 

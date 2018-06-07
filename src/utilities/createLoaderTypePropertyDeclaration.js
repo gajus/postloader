@@ -1,18 +1,15 @@
 // @flow
 
-import type {
-  ColumnType
-} from '../types';
 import formatTypeName from './formatTypeName';
 import isNumberType from './isNumberType';
 import isStringType from './isStringType';
 
-export default (loaderName: string, keyColumn: ColumnType, resourceName: string, resultIsArray: boolean) => {
+export default (loaderName: string, dataTypeName: string, resourceName: string, resultIsArray: boolean) => {
   let keyType: 'number' | 'string';
 
-  if (isNumberType(keyColumn.dataType)) {
+  if (isNumberType(dataTypeName)) {
     keyType = 'number';
-  } else if (isStringType(keyColumn.dataType)) {
+  } else if (isStringType(dataTypeName)) {
     keyType = 'string';
   } else {
     throw new Error('Unexpected state.');
