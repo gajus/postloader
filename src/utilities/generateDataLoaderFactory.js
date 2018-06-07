@@ -113,7 +113,12 @@ export default (
 
       loaders.push(createLoaderByIdsDeclaration(loaderName, tableName, indexColumn.name, tableColumnSelector, false));
 
-      const loaderType = createLoaderTypePropertyDeclaration(loaderName, indexColumn, indexColumn.mappedTableName, false);
+      const loaderType = createLoaderTypePropertyDeclaration(
+        loaderName,
+        dataTypeMap[indexColumn.dataType] ? dataTypeMap[indexColumn.dataType] : indexColumn.dataType,
+        indexColumn.mappedTableName,
+        false
+      );
 
       loaderTypes.push(loaderType);
 
@@ -186,7 +191,12 @@ export default (
         throw new Error('Unexpected state.');
       }
 
-      const loaderType = createLoaderTypePropertyDeclaration(loaderName, keyColumn, relation.resource, true);
+      const loaderType = createLoaderTypePropertyDeclaration(
+        loaderName,
+        dataTypeMap[keyColumn.dataType] ? dataTypeMap[keyColumn.dataType] : keyColumn.dataType,
+        relation.resource,
+        true
+      );
 
       loaderTypes.push(loaderType);
 
