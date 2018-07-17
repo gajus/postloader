@@ -3,4 +3,4 @@
 export {
   getByIds,
   getByIdsUsingJoiningTable
-} from './utilities';
+} from './routines';
