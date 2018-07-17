@@ -184,6 +184,8 @@ export const createLoaders = (connection: DatabaseConnectionType, NotFoundError:
 
 ```
 
+Notice that the generated file depends on `postloader` package, i.e. you must install `postloader` as the main project dependency (as opposed to a development dependency).
+
 ### Consume the generated code
 
 1. Dump the generated code to a file in your project tree, e.g. `/generated/PostLoader.js`.
