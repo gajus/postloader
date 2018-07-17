@@ -5,9 +5,8 @@
     "url": "http://gajus.com"
   },
   "ava": {
-    "babel": "inherit",
     "require": [
-      "babel-register"
+      "@babel/register"
     ]
   },
   "bin": "./dist/bin/index.js",
@@ -15,29 +14,36 @@
     "es6-error": "^4.1.1",
     "lodash": "^4.17.10",
     "pluralize": "^7.0.0",
-    "roarr": "^2.3.0",
-    "slonik": "^5.7.0",
-    "yargs": "^11.0.0"
+    "roarr": "^2.3.2",
+    "slonik": "^6.0.0",
+    "yargs": "^12.0.1"
   },
   "description": "A scaffolding tool for projects using DataLoader, Flow and PostgreSQL.",
   "devDependencies": {
-    "ava": "^0.25.0",
-    "babel-cli": "^6.26.0",
-    "babel-plugin-istanbul": "^4.1.6",
-    "babel-plugin-transform-flow-strip-types": "^6.22.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-register": "^6.26.0",
-    "coveralls": "^3.0.1",
-    "eslint": "^5.0.0",
-    "eslint-config-canonical": "^10.3.1",
-    "flow-bin": "^0.75.0",
-    "husky": "^0.14.3",
-    "nyc": "^12.0.2",
-    "semantic-release": "^15.6.0"
+    "@babel/cli": "^7.0.0-beta.54",
+    "@babel/core": "^7.0.0-beta.54",
+    "@babel/node": "^7.0.0-beta.54",
+    "@babel/plugin-transform-flow-strip-types": "^7.0.0-beta.54",
+    "@babel/preset-env": "^7.0.0-beta.54",
+    "@babel/register": "^7.0.0-beta.54",
+    "ava": "^1.0.0-beta.6",
+    "babel-plugin-istanbul": "^5.0.0",
+    "coveralls": "^3.0.2",
+    "eslint": "^5.1.0",
+    "eslint-config-canonical": "^11.0.0",
+    "flow-bin": "^0.76.0",
+    "flow-copy-source": "^2.0.1",
+    "husky": "^1.0.0-rc.13",
+    "nyc": "^13.0.0",
+    "semantic-release": "^15.8.0"
   },
   "engines": {
     "node": ">=8"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run test && npm run lint && npm run build"
+    }
   },
   "keywords": [
     "flowtype",
@@ -47,16 +53,19 @@
   "main": "./dist/index.js",
   "name": "postloader",
   "nyc": {
+    "all": true,
     "include": [
       "src/**/*.js"
     ],
     "instrument": false,
     "reporter": [
-      "text-lcov"
+      "html",
+      "text-summary"
     ],
     "require": [
-      "babel-register"
+      "@babel/register"
     ],
+    "silent": true,
     "sourceMap": false
   },
   "repository": {
@@ -64,9 +73,10 @@
     "url": "https://github.com/gajus/postloader"
   },
   "scripts": {
-    "build": "rm -fr ./dist && NODE_ENV=production babel ./src --out-dir ./dist --copy-files --source-maps",
-    "lint": "eslint ./src ./test && flow",
-    "test": "ava --verbose"
+    "build": "rm -fr ./dist && NODE_ENV=production babel ./src --out-dir ./dist --copy-files --source-maps && flow-copy-source src dist",
+    "dev": "NODE_ENV=development babel ./src --out-dir ./dist --copy-files --source-maps --watch",
+    "lint": "eslint ./src && flow",
+    "test": "NODE_ENV=test nyc ava --verbose --serial && nyc report"
   },
   "version": "1.0.0"
 }
