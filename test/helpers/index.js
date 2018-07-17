@@ -4,9 +4,12 @@ import type {
   ColumnType
 } from '../../src/types';
 
+export const createColumn = (columns: any): ColumnType => {
+  return columns;
+};
+
 export const createColumnWithName = (columnName: string): ColumnType => {
-  // eslint-disable-next-line no-extra-parens
-  return ({
+  return createColumn({
     name: columnName
-  }: any);
+  });
 };
