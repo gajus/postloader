@@ -1,8 +1,13 @@
 // @flow
 
+import Logger from '../Logger';
 import formatTypeName from './formatTypeName';
 import isNumberType from './isNumberType';
 import isStringType from './isStringType';
+
+const log = Logger.child({
+  namespace: 'createLoaderTypePropertyDeclaration'
+});
 
 export default (loaderName: string, dataTypeName: string, resourceName: string, resultIsArray: boolean) => {
   let keyType: 'number' | 'string';
@@ -12,7 +17,14 @@ export default (loaderName: string, dataTypeName: string, resourceName: string, 
   } else if (isStringType(dataTypeName)) {
     keyType = 'string';
   } else {
-    throw new Error('Unexpected state.');
+    log.error({
+      dataTypeName,
+      loaderName,
+      resourceName,
+      resultIsArray
+    }, 'key type cannot be resolved to a string or number');
+
+    throw new Error('Cannot resolve key type.');
   }
 
   if (resultIsArray) {

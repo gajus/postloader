@@ -17,7 +17,7 @@ const generateFlowTypeDeclarationBody = (columns: $ReadOnlyArray<ColumnType>, da
   const propertyDeclarations = [];
 
   for (const column of sortedColumns) {
-    const propertyDataType = dataTypeMap[column.dataType] ? dataTypeMap[column.dataType] : getFlowType(column.dataType);
+    const propertyDataType = dataTypeMap[column.dataType] ? getFlowType(dataTypeMap[column.dataType]) : getFlowType(column.dataType);
 
     propertyDeclarations.push('+' + formatPropertyName(column.name) + ': ' + propertyDataType + (column.isNullable ? ' | null' : ''));
   }
