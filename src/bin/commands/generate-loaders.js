@@ -1,7 +1,7 @@
 // @flow
 
 import {
-  createConnection
+  createPool
 } from 'slonik';
 import type {
   ColumnType,
@@ -58,9 +58,9 @@ export const handler = async (argv: ArgvType): Promise<void> => {
 
   const dataTypeMap: DataTypeMapType = argv.dataTypeMap ? JSON.parse(argv.dataTypeMap) : {};
 
-  const connection = await createConnection(argv.databaseConnectionUri);
+  const pool = await createPool(argv.databaseConnectionUri);
 
-  const columns = await getDatabaseColumns(connection);
+  const columns = await getDatabaseColumns(pool);
 
   const normalizedColumns = columns
     .filter((column) => {
@@ -87,10 +87,8 @@ export const handler = async (argv: ArgvType): Promise<void> => {
       };
     });
 
-  const indexes = await getDatabaseIndexes(connection);
+  const indexes = await getDatabaseIndexes(pool);
 
   // eslint-disable-next-line no-console
   console.log(generateDataLoaderFactory(normalizedColumns, indexes, dataTypeMap));
-
-  await connection.end();
 };

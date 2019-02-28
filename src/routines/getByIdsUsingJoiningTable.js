@@ -1,5 +1,8 @@
 // @flow
 
+import {
+  sql
+} from 'slonik';
 import type {
   DatabaseConnectionType
 } from '../types';
@@ -10,20 +13,20 @@ export default async (
   targetResourceTableName: string,
   joiningKeyName: string,
   lookupKeyName: string,
-  columnSelector: string,
+  identifiers: string,
   ids: $ReadOnlyArray<string | number>
 ): Promise<$ReadOnlyArray<any>> => {
   let rows = [];
 
   if (ids.length > 0) {
-    rows = await connection.any(`
-      SELECT r1.${lookupKeyName}_id "POSTLOADER_LOOKUP_KEY", ${columnSelector}
-      FROM ${joiningTableName} r1
-      INNER JOIN ${targetResourceTableName} r2 ON r2.id = r1.${joiningKeyName}_id
-      WHERE r1.${lookupKeyName}_id IN ?
-    `, [
-      ids
-    ]);
+    rows = await connection.any(sql`
+      SELECT
+        ${sql.identifier(['r1', lookupKeyName + '_id'])} "POSTLOADER_LOOKUP_KEY",
+        ${sql.raw(identifiers)}
+      FROM ${sql.identifier([joiningTableName])} r1
+      INNER JOIN ${sql.identifier([targetResourceTableName])} r2 ON r2.id = ${sql.identifier(['r1', joiningKeyName + '_id'])}
+      WHERE ${sql.identifier(['r1', lookupKeyName + '_id'])} IN (${sql.values(ids)})
+    `);
   }
 
   const results = [];

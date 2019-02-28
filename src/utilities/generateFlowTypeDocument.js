@@ -43,8 +43,6 @@ export default (columns: $ReadOnlyArray<ColumnType>, dataTypeMap: DataTypeMapTyp
 
     const typeName = formatTypeName(tableName);
 
-    // @todo Use indent.
-
     const typeDeclaration = `
 type ${typeName} = {|
   ${generateFlowTypeDeclarationBody(tableColumns, dataTypeMap).split('\n').join(',\n  ')}

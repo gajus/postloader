@@ -1,6 +1,9 @@
 // @flow
 
 import {
+  sql
+} from 'slonik';
+import {
   camelCase
 } from 'lodash';
 import Logger from '../Logger';
@@ -17,16 +20,18 @@ export default async (
   tableName: string,
   ids: $ReadOnlyArray<string | number>,
   idName: string = 'id',
-  columnSelector: string,
+  identifiers: string,
   resultIsArray: boolean,
   NotFoundError: Class<Error>
 ): Promise<$ReadOnlyArray<any>> => {
   let rows = [];
 
   if (ids.length > 0) {
-    rows = await connection.any('SELECT ' + columnSelector + ' FROM "' + tableName + '" WHERE ' + idName + ' IN ?', [
-      ids
-    ]);
+    rows = await connection.any(sql`
+      SELECT ${sql.raw(identifiers)}
+      FROM ${sql.identifier([tableName])}
+      WHERE ${sql.identifier([idName])} IN (${sql.valueList(ids)})
+    `);
   }
 
   const results = [];
