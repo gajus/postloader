@@ -25,6 +25,10 @@ export default (databaseTypeName: string): string => {
     return 'number';
   }
 
+  if (databaseTypeName === 'json' || databaseTypeName === 'jsonb') {
+    return 'Object';
+  }
+
   log.warn({
     databaseTypeName
   }, 'unknown type');
