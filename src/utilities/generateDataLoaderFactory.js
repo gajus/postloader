@@ -247,7 +247,7 @@ ${generateFlowTypeDocument(columns, dataTypeMap)}
 export type LoadersType = {|
 ${loaderTypes.map((body) => {
     return indent(body, 2);
-  }).join(',\n')}
+  }).sort().join(',\n')}
 |};
 
 export const createLoaders = (connection: DatabaseConnectionType, NotFoundError: Class<Error>): LoadersType => {

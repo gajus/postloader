@@ -45,16 +45,20 @@ export default (columns: $ReadOnlyArray<ColumnType>, dataTypeMap: DataTypeMapTyp
 
     const typeDeclaration = `
 type ${typeName} = {|
-  ${generateFlowTypeDeclarationBody(tableColumns, dataTypeMap).split('\n').join(',\n  ')}
+  ${generateFlowTypeDeclarationBody(tableColumns, dataTypeMap).split('\n').sort().join(',\n  ')}
 |};`;
 
     typeDeclarations.push(typeDeclaration);
   }
 
+  const exportedTypes = tableNames.map((tableName) => {
+    return formatTypeName(tableName);
+  })
+    .sort()
+    .join(',\n  ');
+
   return typeDeclarations.join('\n') + `\n
 export type {
-  ${tableNames.map((tableName) => {
-    return formatTypeName(tableName);
-  }).join(',\n  ')}
+  ${exportedTypes}
 };`;
 };

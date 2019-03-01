@@ -51,8 +51,8 @@ type BarRecordType = {|
 |};
 
 export type {
-  QuxRecordType,
-  BarRecordType
+  BarRecordType,
+  QuxRecordType
 };`);
 
   t.true(actual === expected);

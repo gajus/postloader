@@ -124,3 +124,111 @@ export const createLoaders = (connection: DatabaseConnectionType, NotFoundError:
   // eslint-disable-next-line ava/prefer-power-assert
   t.is(actual, expected);
 });
+
+test('creates a loader for a join table', (t) => {
+  const actual = trim(generateDataLoaderFactory(
+    [
+      {
+        comment: '',
+        dataType: 'text',
+        isMaterializedView: false,
+        isNullable: false,
+        mappedTableName: 'bar',
+        name: 'id',
+        tableName: 'bar'
+      },
+      {
+        comment: '',
+        dataType: 'text',
+        isMaterializedView: false,
+        isNullable: false,
+        mappedTableName: 'foo',
+        name: 'id',
+        tableName: 'foo'
+      },
+      {
+        comment: '',
+        dataType: 'text',
+        isMaterializedView: false,
+        isNullable: false,
+        mappedTableName: 'bar_foo',
+        name: 'bar_id',
+        tableName: 'bar_foo'
+      },
+      {
+        comment: '',
+        dataType: 'text',
+        isMaterializedView: false,
+        isNullable: false,
+        mappedTableName: 'bar_foo',
+        name: 'foo_id',
+        tableName: 'bar_foo'
+      }
+    ],
+    [],
+    {}
+  ));
+
+  const expected = trim(`
+// @flow
+
+import {
+  getByIds,
+  getByIdsUsingJoiningTable
+} from 'postloader';
+import DataLoader from 'dataloader';
+import type {
+  DatabaseConnectionType
+} from 'slonik';
+
+type BarRecordType = {|
+  +id: string
+|};
+
+type FooRecordType = {|
+  +id: string
+|};
+
+type BarFooRecordType = {|
+  +barId: string,
+  +fooId: string
+|};
+
+export type {
+  BarFooRecordType,
+  BarRecordType,
+  FooRecordType
+};
+
+export type LoadersType = {|
+  +BarFoosByBarIdLoader: DataLoader<string, $ReadOnlyArray<BarFooRecordType>>,
+  +BarFoosByFooIdLoader: DataLoader<string, $ReadOnlyArray<BarFooRecordType>>,
+  +BarsByFooIdLoader: DataLoader<string, $ReadOnlyArray<BarRecordType>>,
+  +FoosByBarIdLoader: DataLoader<string, $ReadOnlyArray<FooRecordType>>
+|};
+
+export const createLoaders = (connection: DatabaseConnectionType, NotFoundError: Class<Error>): LoadersType => {
+  const BarFoosByBarIdLoader = new DataLoader((ids) => {
+    return getByIds(connection, 'bar_foo', ids, 'bar_id', '"bar_id" "barId", "foo_id" "fooId"', true, NotFoundError);
+  });
+  const BarFoosByFooIdLoader = new DataLoader((ids) => {
+    return getByIds(connection, 'bar_foo', ids, 'foo_id', '"bar_id" "barId", "foo_id" "fooId"', true, NotFoundError);
+  });
+  const FoosByBarIdLoader = new DataLoader((ids) => {
+    return getByIdsUsingJoiningTable(connection, 'bar_foo', 'foo', 'foo', 'bar', 'r2."id"', ids);
+  });
+  const BarsByFooIdLoader = new DataLoader((ids) => {
+    return getByIdsUsingJoiningTable(connection, 'bar_foo', 'bar', 'bar', 'foo', 'r2."id"', ids);
+  });
+
+  return {
+    BarFoosByBarIdLoader,
+    BarFoosByFooIdLoader,
+    BarsByFooIdLoader,
+    FoosByBarIdLoader
+  };
+};`);
+
+  // eslint-disable-next-line ava/prefer-power-assert
+  t.is(actual, expected);
+});
