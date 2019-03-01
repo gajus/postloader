@@ -1,10 +1,10 @@
 // @flow
 
 import test from 'ava';
-import createColumnSelector from '../../src/utilities/createColumnSelector';
+import createColumnSelector from '../../../src/utilities/createColumnSelector';
 import {
   createColumnWithName
-} from '../helpers';
+} from '../../helpers';
 
 test('creates multiple column selector', (t) => {
   const columnSelector = createColumnSelector([

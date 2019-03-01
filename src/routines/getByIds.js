@@ -7,6 +7,9 @@ import {
   camelCase
 } from 'lodash';
 import Logger from '../Logger';
+import {
+  NotFoundError
+} from '../errors';
 import type {
   DatabaseConnectionType
 } from '../types';
@@ -21,8 +24,7 @@ export default async (
   ids: $ReadOnlyArray<string | number>,
   idName: string = 'id',
   identifiers: string,
-  resultIsArray: boolean,
-  NotFoundError: Class<Error>
+  resultIsArray: boolean
 ): Promise<$ReadOnlyArray<any>> => {
   let rows = [];
 

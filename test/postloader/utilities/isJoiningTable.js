@@ -1,10 +1,10 @@
 // @flow
 
 import test from 'ava';
-import isJoiningTable from '../../src/utilities/isJoiningTable';
+import isJoiningTable from '../../../src/utilities/isJoiningTable';
 import {
   createColumnWithName
-} from '../helpers';
+} from '../../helpers';
 
 test('correctly recognizes a joining table (genre_movie)', (t) => {
   const tableIsJoining = isJoiningTable(

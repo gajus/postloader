@@ -4,10 +4,10 @@ import test from 'ava';
 import {
   trim
 } from 'lodash';
-import generateFlowTypeDocument from '../../src/utilities/generateFlowTypeDocument';
+import generateFlowTypeDocument from '../../../src/utilities/generateFlowTypeDocument';
 import {
   createColumn
-} from '../helpers';
+} from '../../helpers';
 
 test('create flow type document with one type', (t) => {
   const actual = trim(generateFlowTypeDocument([

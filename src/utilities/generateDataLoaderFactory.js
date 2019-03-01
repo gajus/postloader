@@ -10,6 +10,9 @@ import type {
   DataTypeMapType,
   IndexType
 } from '../types';
+import {
+  UnexpectedStateError
+} from '../errors';
 import Logger from '../Logger';
 import generateFlowTypeDocument from './generateFlowTypeDocument';
 import indent from './indent';
@@ -47,6 +50,10 @@ export default (
   indexes: $ReadOnlyArray<IndexType>,
   dataTypeMap: DataTypeMapType,
 ): string => {
+  if (columns.length === 0) {
+    throw new UnexpectedStateError('Must know multiple columns.');
+  }
+
   const tableNames = columns
     .map((column) => {
       return column.tableName;

@@ -1,7 +1,7 @@
 // @flow
 
 import test from 'ava';
-import createLoaderTypePropertyDeclaration from '../../src/utilities/createLoaderTypePropertyDeclaration';
+import createLoaderTypePropertyDeclaration from '../../../src/utilities/createLoaderTypePropertyDeclaration';
 
 test('generates loader type property declaration', (t) => {
   t.true(createLoaderTypePropertyDeclaration('FooLoader', 'text', 'foo', false) === '+FooLoader: DataLoader<string, FooRecordType>');

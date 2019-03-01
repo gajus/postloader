@@ -1,7 +1,7 @@
 // @flow
 
 import test from 'ava';
-import getFlowType from '../../src/utilities/getFlowType';
+import getFlowType from '../../../src/utilities/getFlowType';
 
 const knownTypes = {
   bigint: 'number',
