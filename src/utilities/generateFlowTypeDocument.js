@@ -25,10 +25,18 @@ const generateFlowTypeDeclarationBody = (columns: $ReadOnlyArray<ColumnType>, da
   return propertyDeclarations.join('\n');
 };
 
-export default (columns: $ReadOnlyArray<ColumnType>, dataTypeMap: DataTypeMapType = {}): string => {
+export default (unnormalisedColumns: $ReadOnlyArray<ColumnType>, dataTypeMap: DataTypeMapType = {}): string => {
+  const columns = unnormalisedColumns
+    .map((column) => {
+      return {
+        ...column,
+        mappedTableName: column.mappedTableName || column.tableName
+      };
+    });
+
   const tableNames = columns
     .map((column) => {
-      return column.mappedTableName;
+      return column.mappedTableName || column.tableName;
     })
     .filter((tableName, index, self) => {
       return self.indexOf(tableName) === index;

@@ -14,6 +14,69 @@ test('creates a loader for unique indexes', (t) => {
         dataType: 'text',
         isMaterializedView: false,
         isNullable: false,
+        name: 'bar',
+        tableName: 'foo'
+      }
+    ],
+    [
+      {
+        columnNames: [
+          'bar'
+        ],
+        indexIsUnique: true,
+        indexName: 'quux',
+        tableName: 'foo'
+      }
+    ],
+    {}
+  ));
+
+  const expected = trim(`
+// @flow
+
+import {
+  getByIds,
+  getByIdsUsingJoiningTable
+} from 'postloader';
+import DataLoader from 'dataloader';
+import type {
+  DatabaseConnectionType
+} from 'slonik';
+
+type FooRecordType = {|
+  +bar: string
+|};
+
+export type {
+  FooRecordType
+};
+
+export type LoadersType = {|
+  +FooByBarLoader: DataLoader<string, FooRecordType>
+|};
+
+export const createLoaders = (connection: DatabaseConnectionType, NotFoundError: Class<Error>): LoadersType => {
+  const FooByBarLoader = new DataLoader((ids) => {
+    return getByIds(connection, 'foo', ids, 'bar', '"bar"', false, NotFoundError);
+  });
+
+  return {
+    FooByBarLoader
+  };
+};`);
+
+  // eslint-disable-next-line ava/prefer-power-assert
+  t.is(actual, expected);
+});
+
+test('creates a loader for unique indexes (uses mappedTableName when available)', (t) => {
+  const actual = trim(generateDataLoaderFactory(
+    [
+      {
+        comment: '',
+        dataType: 'text',
+        isMaterializedView: false,
+        isNullable: false,
         mappedTableName: 'baz',
         name: 'bar',
         tableName: 'foo'

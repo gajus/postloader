@@ -13,7 +13,7 @@ export type ColumnType = {|
   +dataType: string,
   +isMaterializedView: boolean,
   +isNullable: boolean,
-  +mappedTableName: string,
+  +mappedTableName?: string,
   +name: string,
   +tableName: string
 |};

@@ -46,10 +46,18 @@ const createLoaderByIdsUsingJoiningTableDeclaration = (
 
 // eslint-disable-next-line complexity
 export default (
-  columns: $ReadOnlyArray<ColumnType>,
+  unnormalisedColumns: $ReadOnlyArray<ColumnType>,
   indexes: $ReadOnlyArray<IndexType>,
   dataTypeMap: DataTypeMapType,
 ): string => {
+  const columns = unnormalisedColumns
+    .map((column) => {
+      return {
+        ...column,
+        mappedTableName: column.mappedTableName || column.tableName
+      };
+    });
+
   if (columns.length === 0) {
     throw new UnexpectedStateError('Must know multiple columns.');
   }
