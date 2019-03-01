@@ -55,7 +55,8 @@
   "nyc": {
     "all": true,
     "exclude": [
-      "src/bin"
+      "src/bin",
+      "src/queries"
     ],
     "include": [
       "src/**/*.js"
