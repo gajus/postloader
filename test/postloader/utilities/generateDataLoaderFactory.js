@@ -36,7 +36,8 @@ test('creates a loader for unique indexes', (t) => {
 
 import {
   getByIds,
-  getByIdsUsingJoiningTable
+  getByIdsUsingJoiningTable,
+  NotFoundError
 } from 'postloader';
 import DataLoader from 'dataloader';
 import type {
@@ -55,7 +56,7 @@ export type LoadersType = {|
   +FooByBarLoader: DataLoader<string, FooRecordType>
 |};
 
-export const createLoaders = (connection: DatabaseConnectionType, NotFoundError: Class<Error>): LoadersType => {
+export const createLoaders = (connection: DatabaseConnectionType): LoadersType => {
   const FooByBarLoader = new DataLoader((ids) => {
     return getByIds(connection, 'foo', ids, 'bar', '"bar"', false, NotFoundError);
   });
@@ -100,7 +101,8 @@ test('creates a loader for unique indexes (uses mappedTableName when available)'
 
 import {
   getByIds,
-  getByIdsUsingJoiningTable
+  getByIdsUsingJoiningTable,
+  NotFoundError
 } from 'postloader';
 import DataLoader from 'dataloader';
 import type {
@@ -119,7 +121,7 @@ export type LoadersType = {|
   +BazByBarLoader: DataLoader<string, BazRecordType>
 |};
 
-export const createLoaders = (connection: DatabaseConnectionType, NotFoundError: Class<Error>): LoadersType => {
+export const createLoaders = (connection: DatabaseConnectionType): LoadersType => {
   const BazByBarLoader = new DataLoader((ids) => {
     return getByIds(connection, 'foo', ids, 'bar', '"bar"', false, NotFoundError);
   });
@@ -155,7 +157,8 @@ test('creates a loader for _id columns', (t) => {
 
 import {
   getByIds,
-  getByIdsUsingJoiningTable
+  getByIdsUsingJoiningTable,
+  NotFoundError
 } from 'postloader';
 import DataLoader from 'dataloader';
 import type {
@@ -174,7 +177,7 @@ export type LoadersType = {|
   +BazsByBarIdLoader: DataLoader<string, $ReadOnlyArray<BazRecordType>>
 |};
 
-export const createLoaders = (connection: DatabaseConnectionType, NotFoundError: Class<Error>): LoadersType => {
+export const createLoaders = (connection: DatabaseConnectionType): LoadersType => {
   const BazsByBarIdLoader = new DataLoader((ids) => {
     return getByIds(connection, 'foo', ids, 'bar_id', '"bar_id" "barId"', true, NotFoundError);
   });
@@ -237,7 +240,8 @@ test('creates a loader for a join table', (t) => {
 
 import {
   getByIds,
-  getByIdsUsingJoiningTable
+  getByIdsUsingJoiningTable,
+  NotFoundError
 } from 'postloader';
 import DataLoader from 'dataloader';
 import type {
@@ -270,7 +274,7 @@ export type LoadersType = {|
   +FoosByBarIdLoader: DataLoader<string, $ReadOnlyArray<FooRecordType>>
 |};
 
-export const createLoaders = (connection: DatabaseConnectionType, NotFoundError: Class<Error>): LoadersType => {
+export const createLoaders = (connection: DatabaseConnectionType): LoadersType => {
   const BarFoosByBarIdLoader = new DataLoader((ids) => {
     return getByIds(connection, 'bar_foo', ids, 'bar_id', '"bar_id" "barId", "foo_id" "fooId"', true, NotFoundError);
   });

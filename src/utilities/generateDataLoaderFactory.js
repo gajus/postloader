@@ -244,7 +244,8 @@ export default (
 
 import {
   getByIds,
-  getByIdsUsingJoiningTable
+  getByIdsUsingJoiningTable,
+  NotFoundError
 } from 'postloader';
 import DataLoader from 'dataloader';
 import type {
@@ -258,7 +259,7 @@ ${loaderTypes.map((body) => {
   }).sort().join(',\n')}
 |};
 
-export const createLoaders = (connection: DatabaseConnectionType, NotFoundError: Class<Error>): LoadersType => {
+export const createLoaders = (connection: DatabaseConnectionType): LoadersType => {
 ${loaders
     .map((body) => {
       return indent(body, 2);
