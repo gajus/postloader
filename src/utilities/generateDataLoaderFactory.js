@@ -28,7 +28,7 @@ const log = Logger.child({
 const createLoaderByIdsDeclaration = (loaderName: string, tableName: string, keyColumnName, columnSelector: string, resultIsArray: boolean) => {
   return `const ${loaderName} = new DataLoader((ids) => {
   return getByIds(connection, '${tableName}', ids, '${keyColumnName}', '${columnSelector}', ${String(resultIsArray)}, NotFoundError);
-});`;
+}, dataLoaderConfigurationMap.${loaderName});`;
 };
 
 const createLoaderByIdsUsingJoiningTableDeclaration = (
@@ -41,7 +41,7 @@ const createLoaderByIdsUsingJoiningTableDeclaration = (
 ) => {
   return `const ${loaderName} = new DataLoader((ids) => {
   return getByIdsUsingJoiningTable(connection, '${joiningTableName}', '${targetResourceTableName}', '${joiningKeyName}', '${lookupKeyName}', '${columnSelector}', ids);
-});`;
+}, dataLoaderConfigurationMap.${loaderName});`;
 };
 
 // eslint-disable-next-line complexity
@@ -259,7 +259,7 @@ ${loaderTypes.map((body) => {
   }).sort().join(',\n')}
 |};
 
-export const createLoaders = (connection: DatabaseConnectionType): LoadersType => {
+export const createLoaders = (connection: DatabaseConnectionType, dataLoaderConfigurationMap: Object = {}): LoadersType => {
 ${loaders
     .map((body) => {
       return indent(body, 2);

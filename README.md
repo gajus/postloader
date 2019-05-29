@@ -223,6 +223,17 @@ const updateUserPassword = (user: UserRecordType, newPassword: string) => {
 
 ```
 
+You can optionally pass a second parameter to `createLoaders` – loader configuration map, e.g.
+
+```js
+const loaders = createLoaders(connection, {
+  UserByIdLoader: {
+    cache: false
+  }
+});
+
+```
+
 ### Handling non-nullable columns in materialized views
 
 Unfortunately, PostgreSQL does not describe materilized view columns as non-nullable even when you add a constraint that enforce this contract ([see this Stack Overflow question](https://stackoverflow.com/q/47242219/368691)).
