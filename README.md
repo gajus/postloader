@@ -164,9 +164,9 @@ export type LoadersType = {|
 
 // [..]
 
-export const createLoaders = (connection: DatabaseConnectionType, NotFoundError: Error) => {
+export const createLoaders = (connection: DatabaseConnectionType) => {
   const UserByIdLoader = new DataLoader((ids) => {
-    return getByIds(connection, 'user', ids, 'id', '"id", "email", "given_name" "givenName", "family_name" "familyName", "password", "created_at" "createdAt", "updated_at" "updatedAt", "pseudonym"', false, NotFoundError);
+    return getByIds(connection, 'user', ids, 'id', '"id", "email", "given_name" "givenName", "family_name" "familyName", "password", "created_at" "createdAt", "updated_at" "updatedAt", "pseudonym"', false);
   });
   const UsersByAffiliateIdLoader = new DataLoader((ids) => {
     return getByIdsUsingJoiningTable(connection, 'affiliate_user', 'user', 'user', 'affiliate', 'r2."id", r2."email", r2."given_name" "givenName", r2."family_name" "familyName", r2."password", r2."created_at" "createdAt", r2."updated_at" "updatedAt", r2."pseudonym"', ids);
