@@ -27,7 +27,7 @@ const log = Logger.child({
 
 const createLoaderByIdsDeclaration = (loaderName: string, tableName: string, keyColumnName, columnSelector: string, resultIsArray: boolean) => {
   return `const ${loaderName} = new DataLoader((ids) => {
-  return getByIds(connection, '${tableName}', ids, '${keyColumnName}', '${columnSelector}', ${String(resultIsArray)}, NotFoundError);
+  return getByIds(connection, '${tableName}', ids, '${keyColumnName}', '${columnSelector}', ${String(resultIsArray)});
 }, dataLoaderConfigurationMap.${loaderName});`;
 };
 
