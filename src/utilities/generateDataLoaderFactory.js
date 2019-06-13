@@ -244,8 +244,7 @@ export default (
 
 import {
   getByIds,
-  getByIdsUsingJoiningTable,
-  NotFoundError
+  getByIdsUsingJoiningTable
 } from 'postloader';
 import DataLoader from 'dataloader';
 import type {
