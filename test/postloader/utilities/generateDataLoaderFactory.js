@@ -55,10 +55,10 @@ export type LoadersType = {|
   +FooByBarLoader: DataLoader<string, FooRecordType>
 |};
 
-export const createLoaders = (connection: DatabaseConnectionType): LoadersType => {
+export const createLoaders = (connection: DatabaseConnectionType, dataLoaderConfigurationMap: Object = {}): LoadersType => {
   const FooByBarLoader = new DataLoader((ids) => {
     return getByIds(connection, 'foo', ids, 'bar', '"bar"', false);
-  });
+  }, dataLoaderConfigurationMap.FooByBarLoader);
 
   return {
     FooByBarLoader
@@ -119,10 +119,10 @@ export type LoadersType = {|
   +BazByBarLoader: DataLoader<string, BazRecordType>
 |};
 
-export const createLoaders = (connection: DatabaseConnectionType): LoadersType => {
+export const createLoaders = (connection: DatabaseConnectionType, dataLoaderConfigurationMap: Object = {}): LoadersType => {
   const BazByBarLoader = new DataLoader((ids) => {
     return getByIds(connection, 'foo', ids, 'bar', '"bar"', false);
-  });
+  }, dataLoaderConfigurationMap.BazByBarLoader);
 
   return {
     BazByBarLoader
@@ -174,10 +174,10 @@ export type LoadersType = {|
   +BazsByBarIdLoader: DataLoader<string, $ReadOnlyArray<BazRecordType>>
 |};
 
-export const createLoaders = (connection: DatabaseConnectionType): LoadersType => {
+export const createLoaders = (connection: DatabaseConnectionType, dataLoaderConfigurationMap: Object = {}): LoadersType => {
   const BazsByBarIdLoader = new DataLoader((ids) => {
     return getByIds(connection, 'foo', ids, 'bar_id', '"bar_id" "barId"', true);
-  });
+  }, dataLoaderConfigurationMap.BazsByBarIdLoader);
 
   return {
     BazsByBarIdLoader
@@ -270,19 +270,19 @@ export type LoadersType = {|
   +FoosByBarIdLoader: DataLoader<string, $ReadOnlyArray<FooRecordType>>
 |};
 
-export const createLoaders = (connection: DatabaseConnectionType): LoadersType => {
+export const createLoaders = (connection: DatabaseConnectionType, dataLoaderConfigurationMap: Object = {}): LoadersType => {
   const BarFoosByBarIdLoader = new DataLoader((ids) => {
     return getByIds(connection, 'bar_foo', ids, 'bar_id', '"bar_id" "barId", "foo_id" "fooId"', true);
-  });
+  }, dataLoaderConfigurationMap.BarFoosByBarIdLoader);
   const BarFoosByFooIdLoader = new DataLoader((ids) => {
     return getByIds(connection, 'bar_foo', ids, 'foo_id', '"bar_id" "barId", "foo_id" "fooId"', true);
-  });
+  }, dataLoaderConfigurationMap.BarFoosByFooIdLoader);
   const FoosByBarIdLoader = new DataLoader((ids) => {
     return getByIdsUsingJoiningTable(connection, 'bar_foo', 'foo', 'foo', 'bar', 'r2."id"', ids);
-  });
+  }, dataLoaderConfigurationMap.FoosByBarIdLoader);
   const BarsByFooIdLoader = new DataLoader((ids) => {
     return getByIdsUsingJoiningTable(connection, 'bar_foo', 'bar', 'bar', 'foo', 'r2."id"', ids);
-  });
+  }, dataLoaderConfigurationMap.BarsByFooIdLoader);
 
   return {
     BarFoosByBarIdLoader,
