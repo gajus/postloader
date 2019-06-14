@@ -6,6 +6,10 @@ import {
 import {
   camelCase
 } from 'lodash';
+import {
+  filter,
+  find
+} from 'inline-loops.macro';
 import Logger from '../Logger';
 import {
   NotFoundError
@@ -44,7 +48,7 @@ export default async (
 
   if (resultIsArray) {
     for (const id of ids) {
-      const result = rows.filter((row) => {
+      const result = filter(rows, (row) => {
         return row[targetPropertyName] === id;
       });
 
@@ -52,7 +56,7 @@ export default async (
     }
   } else {
     for (const id of ids) {
-      let result = rows.find((row) => {
+      let result = find(rows, (row) => {
         return row[targetPropertyName] === id;
       });
 

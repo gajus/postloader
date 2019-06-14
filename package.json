@@ -20,7 +20,9 @@
   },
   "bin": "./dist/bin/index.js",
   "dependencies": {
+    "babel-plugin-macros": "^2.6.1",
     "es6-error": "^4.1.1",
+    "inline-loops.macro": "^1.0.3",
     "lodash": "^4.17.11",
     "pluralize": "^8.0.0",
     "roarr": "^2.13.2",

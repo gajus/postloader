@@ -3,6 +3,9 @@
 import {
   sql
 } from 'slonik';
+import {
+  filter
+} from 'inline-loops.macro';
 import type {
   DatabaseConnectionType
 } from '../types';
@@ -32,7 +35,7 @@ export default async (
   const results = [];
 
   for (const id of ids) {
-    const result = rows.filter((row) => {
+    const result = filter(rows, (row) => {
       return row.POSTLOADER_LOOKUP_KEY === id;
     });
 
