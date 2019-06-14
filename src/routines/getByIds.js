@@ -29,10 +29,12 @@ export default async (
   let rows = [];
 
   if (ids.length > 0) {
+    const idType = typeof ids[0] === 'number' ? 'int4' : 'text';
+
     rows = await connection.any(sql`
       SELECT ${sql.raw(identifiers)}
       FROM ${sql.identifier([tableName])}
-      WHERE ${sql.identifier([idName])} IN (${sql.valueList(ids)})
+      WHERE ${sql.identifier([idName])} = ANY(${sql.array(ids, idType)})
     `);
   }
 
