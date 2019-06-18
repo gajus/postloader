@@ -1,5 +1,6 @@
 # PostLoader
 
+[![GitSpo Mentions](https://gitspo.com/badges/mentions/gajus/postloader?style=flat-square)](https://gitspo.com/mentions/gajus/postloader)
 [![Travis build status](http://img.shields.io/travis/gajus/postloader/master.svg?style=flat-square)](https://travis-ci.org/gajus/postloader)
 [![Coveralls](https://img.shields.io/coveralls/gajus/postloader.svg?style=flat-square)](https://coveralls.io/github/gajus/postloader)
 [![NPM version](http://img.shields.io/npm/v/postloader.svg?style=flat-square)](https://www.npmjs.org/package/postloader)
