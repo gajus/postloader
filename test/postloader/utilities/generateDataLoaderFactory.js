@@ -2,7 +2,7 @@
 
 import test from 'ava';
 import {
-  trim
+  trim,
 } from 'lodash';
 import generateDataLoaderFactory from '../../../src/utilities/generateDataLoaderFactory';
 
@@ -15,18 +15,18 @@ test('creates a loader for unique indexes', (t) => {
         isMaterializedView: false,
         isNullable: false,
         name: 'bar',
-        tableName: 'foo'
-      }
+        tableName: 'foo',
+      },
     ],
     [
       {
         columnNames: [
-          'bar'
+          'bar',
         ],
         indexIsUnique: true,
         indexName: 'quux',
-        tableName: 'foo'
-      }
+        tableName: 'foo',
+      },
     ],
     {}
   ));
@@ -79,18 +79,18 @@ test('creates a loader for unique indexes (uses mappedTableName when available)'
         isNullable: false,
         mappedTableName: 'baz',
         name: 'bar',
-        tableName: 'foo'
-      }
+        tableName: 'foo',
+      },
     ],
     [
       {
         columnNames: [
-          'bar'
+          'bar',
         ],
         indexIsUnique: true,
         indexName: 'quux',
-        tableName: 'foo'
-      }
+        tableName: 'foo',
+      },
     ],
     {}
   ));
@@ -143,8 +143,8 @@ test('creates a loader for _id columns', (t) => {
         isNullable: false,
         mappedTableName: 'baz',
         name: 'bar_id',
-        tableName: 'foo'
-      }
+        tableName: 'foo',
+      },
     ],
     [],
     {}
@@ -198,7 +198,7 @@ test('creates a loader for a join table', (t) => {
         isNullable: false,
         mappedTableName: 'bar',
         name: 'id',
-        tableName: 'bar'
+        tableName: 'bar',
       },
       {
         comment: '',
@@ -207,7 +207,7 @@ test('creates a loader for a join table', (t) => {
         isNullable: false,
         mappedTableName: 'foo',
         name: 'id',
-        tableName: 'foo'
+        tableName: 'foo',
       },
       {
         comment: '',
@@ -216,7 +216,7 @@ test('creates a loader for a join table', (t) => {
         isNullable: false,
         mappedTableName: 'bar_foo',
         name: 'bar_id',
-        tableName: 'bar_foo'
+        tableName: 'bar_foo',
       },
       {
         comment: '',
@@ -225,8 +225,8 @@ test('creates a loader for a join table', (t) => {
         isNullable: false,
         mappedTableName: 'bar_foo',
         name: 'foo_id',
-        tableName: 'bar_foo'
-      }
+        tableName: 'bar_foo',
+      },
     ],
     [],
     {}

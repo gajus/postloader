@@ -1,25 +1,25 @@
 // @flow
 
 import {
-  sql
+  sql,
 } from 'slonik';
 import {
-  camelCase
+  camelCase,
 } from 'lodash';
 import {
   filter,
-  find
+  find,
 } from 'inline-loops.macro';
 import Logger from '../Logger';
 import {
-  NotFoundError
+  NotFoundError,
 } from '../errors';
 import type {
-  DatabaseConnectionType
+  DatabaseConnectionType,
 } from '../types';
 
 const log = Logger.child({
-  namespace: 'getByIds'
+  namespace: 'getByIds',
 });
 
 export default async (
@@ -64,7 +64,7 @@ export default async (
         log.warn({
           id,
           idName,
-          tableName
+          tableName,
         }, 'resource not found');
 
         result = new NotFoundError();

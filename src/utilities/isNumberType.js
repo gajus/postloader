@@ -14,7 +14,7 @@ const numericTypes = [
   'serial',
   'smallint',
   'timestamp with time zone',
-  'timestamp'
+  'timestamp',
 ];
 
 export default (databaseTypeName: string): boolean => {

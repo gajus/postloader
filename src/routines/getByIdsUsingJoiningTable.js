@@ -1,13 +1,13 @@
 // @flow
 
 import {
-  sql
+  sql,
 } from 'slonik';
 import {
-  filter
+  filter,
 } from 'inline-loops.macro';
 import type {
-  DatabaseConnectionType
+  DatabaseConnectionType,
 } from '../types';
 
 export default async (

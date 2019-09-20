@@ -1,11 +1,12 @@
 // @flow
 
 export type {
-  DatabaseConnectionType
+  DatabaseConnectionType,
 } from 'slonik';
 
 export type DataTypeMapType = {
-  +[key: string]: string
+  +[key: string]: string,
+  ...,
 };
 
 export type ColumnType = {|
@@ -15,12 +16,12 @@ export type ColumnType = {|
   +isNullable: boolean,
   +mappedTableName?: string,
   +name: string,
-  +tableName: string
+  +tableName: string,
 |};
 
 export type IndexType = {|
   +columnNames: $ReadOnlyArray<string>,
   +indexIsUnique: boolean,
   +indexName: string,
-  +tableName: string
+  +tableName: string,
 |};

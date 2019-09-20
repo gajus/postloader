@@ -2,19 +2,19 @@
 
 import test from 'ava';
 import {
-  trim
+  trim,
 } from 'lodash';
 import generateFlowTypeDocument from '../../../src/utilities/generateFlowTypeDocument';
 import {
-  createColumn
+  createColumn,
 } from '../../helpers';
 
 test('create flow type document with one type', (t) => {
   const actual = trim(generateFlowTypeDocument([
     createColumn({
       mappedTableName: 'bar',
-      name: 'foo'
-    })
+      name: 'foo',
+    }),
   ]));
 
   const expected = trim(`
@@ -33,12 +33,12 @@ test('create flow type document with multiple types', (t) => {
   const actual = trim(generateFlowTypeDocument([
     createColumn({
       mappedTableName: 'qux',
-      name: 'baz'
+      name: 'baz',
     }),
     createColumn({
       mappedTableName: 'bar',
-      name: 'foo'
-    })
+      name: 'foo',
+    }),
   ]));
 
   const expected = trim(`

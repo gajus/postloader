@@ -1,10 +1,10 @@
 // @flow
 
 import {
-  camelCase
+  camelCase,
 } from 'lodash';
 import type {
-  ColumnType
+  ColumnType,
 } from '../types';
 
 export default (columns: $ReadOnlyArray<ColumnType>, alias: ?string): string => {

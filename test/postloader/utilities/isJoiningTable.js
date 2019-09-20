@@ -3,7 +3,7 @@
 import test from 'ava';
 import isJoiningTable from '../../../src/utilities/isJoiningTable';
 import {
-  createColumnWithName
+  createColumnWithName,
 } from '../../helpers';
 
 test('correctly recognizes a joining table (genre_movie)', (t) => {
@@ -11,7 +11,7 @@ test('correctly recognizes a joining table (genre_movie)', (t) => {
     'genre_movie',
     [
       createColumnWithName('genre_id'),
-      createColumnWithName('movie_id')
+      createColumnWithName('movie_id'),
     ]
   );
 
@@ -23,7 +23,7 @@ test('correctly recognizes a joining table (event_event_attribute)', (t) => {
     'event_event_attribute',
     [
       createColumnWithName('event_id'),
-      createColumnWithName('event_attribute_id')
+      createColumnWithName('event_attribute_id'),
     ]
   );
 
@@ -35,7 +35,7 @@ test('correctly recognizes not a joining table', (t) => {
     'genre_movie',
     [
       createColumnWithName('id'),
-      createColumnWithName('name')
+      createColumnWithName('name'),
     ]
   );
 

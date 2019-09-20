@@ -1,25 +1,25 @@
 // @flow
 
 import {
-  createPool
+  createPool,
 } from 'slonik';
 import type {
   ColumnType,
-  DataTypeMapType
+  DataTypeMapType,
 } from '../../types';
 import {
   getDatabaseColumns,
-  getDatabaseIndexes
+  getDatabaseIndexes,
 } from '../../queries';
 import {
-  generateDataLoaderFactory
+  generateDataLoaderFactory,
 } from '../../utilities';
 
 type ArgvType = {|
   +columnFilter?: string,
   +dataTypeMap?: string,
   +databaseConnectionUri: string,
-  +tableNameMapper?: string
+  +tableNameMapper?: string,
 |};
 
 type ColumnFilterType = (tableName: string, columnName: string, columns: $ReadOnlyArray<ColumnType>) => boolean;
@@ -33,19 +33,19 @@ export const builder = (yargs: Object): void => {
     .options({
       'column-filter': {
         description: 'Function used to filter columns. Function is constructed using `new Function`. Function receives table name as the first parameter, column name as the second parameter and all database columns as the third parameter (parameter names are "tableName", "columnName" and "columns").',
-        type: 'string'
+        type: 'string',
       },
       'data-type-map': {
         description: 'A JSON string describing an object mapping user-defined database types to Flow types, e.g. {"email": "string"}',
-        type: 'string'
+        type: 'string',
       },
       'database-connection-uri': {
-        demand: true
+        demand: true,
       },
       'table-name-mapper': {
         description: 'Function used to map table names. Function is constructed using `new Function`. Function receives table name as the first parameter and all database columns as the second parameter (parameter names are "tableName" and "columns").',
-        type: 'string'
-      }
+        type: 'string',
+      },
     });
 };
 
@@ -73,7 +73,7 @@ export const handler = async (argv: ArgvType): Promise<void> => {
     .map((column) => {
       return {
         ...column,
-        isNullable: column.comment && column.comment.includes('POSTLOAD_NOTNULL') ? false : column.isNullable
+        isNullable: column.comment && column.comment.includes('POSTLOAD_NOTNULL') ? false : column.isNullable,
       };
     })
     .map((column) => {
@@ -83,7 +83,7 @@ export const handler = async (argv: ArgvType): Promise<void> => {
 
       return {
         ...column,
-        mappedTableName: mapTableName(column.tableName, columns)
+        mappedTableName: mapTableName(column.tableName, columns),
       };
     });
 

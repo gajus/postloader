@@ -6,7 +6,7 @@ import isNumberType from './isNumberType';
 import isStringType from './isStringType';
 
 const log = Logger.child({
-  namespace: 'createLoaderTypePropertyDeclaration'
+  namespace: 'createLoaderTypePropertyDeclaration',
 });
 
 export default (loaderName: string, dataTypeName: string, resourceName: string, resultIsArray: boolean) => {
@@ -21,7 +21,7 @@ export default (loaderName: string, dataTypeName: string, resourceName: string, 
       dataTypeName,
       loaderName,
       resourceName,
-      resultIsArray
+      resultIsArray,
     }, 'key type cannot be resolved to a string or number');
 
     throw new Error('Cannot resolve key type.');

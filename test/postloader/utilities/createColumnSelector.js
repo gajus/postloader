@@ -3,13 +3,13 @@
 import test from 'ava';
 import createColumnSelector from '../../../src/utilities/createColumnSelector';
 import {
-  createColumnWithName
+  createColumnWithName,
 } from '../../helpers';
 
 test('creates multiple column selector', (t) => {
   const columnSelector = createColumnSelector([
     createColumnWithName('foo'),
-    createColumnWithName('bar_baz')
+    createColumnWithName('bar_baz'),
   ]);
 
   t.true(columnSelector === '"foo", "bar_baz" "barBaz"');
@@ -18,7 +18,7 @@ test('creates multiple column selector', (t) => {
 test('creates multiple column selector using an alias', (t) => {
   const columnSelector = createColumnSelector([
     createColumnWithName('foo'),
-    createColumnWithName('bar_baz')
+    createColumnWithName('bar_baz'),
   ], 't1');
 
   t.true(columnSelector === 't1."foo", t1."bar_baz" "barBaz"');

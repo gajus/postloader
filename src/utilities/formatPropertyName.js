@@ -1,7 +1,7 @@
 // @flow
 
 import {
-  camelCase
+  camelCase,
 } from 'lodash';
 
 export default (columnName: string): string => {

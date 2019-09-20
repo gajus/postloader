@@ -1,7 +1,7 @@
 // @flow
 
 import type {
-  ColumnType
+  ColumnType,
 } from '../../src/types';
 
 export const createColumn = (columns: any): ColumnType => {
@@ -10,6 +10,6 @@ export const createColumn = (columns: any): ColumnType => {
 
 export const createColumnWithName = (columnName: string): ColumnType => {
   return createColumn({
-    name: columnName
+    name: columnName,
   });
 };

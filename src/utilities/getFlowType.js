@@ -5,7 +5,7 @@ import isNumberType from './isNumberType';
 import isStringType from './isStringType';
 
 const log = Logger.child({
-  namespace: 'getFlowType'
+  namespace: 'getFlowType',
 });
 
 export default (databaseTypeName: string): string => {
@@ -30,7 +30,7 @@ export default (databaseTypeName: string): string => {
   }
 
   log.warn({
-    databaseTypeName
+    databaseTypeName,
   }, 'unknown type');
 
   return 'any';

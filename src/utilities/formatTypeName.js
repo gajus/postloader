@@ -2,7 +2,7 @@
 
 import {
   camelCase,
-  upperFirst
+  upperFirst,
 } from 'lodash';
 
 export default (tableName: string): string => {

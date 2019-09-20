@@ -1,11 +1,11 @@
 // @flow
 
 import {
-  sql
+  sql,
 } from 'slonik';
 import type {
   ColumnType,
-  DatabaseConnectionType
+  DatabaseConnectionType,
 } from '../types';
 
 export default async (connection: DatabaseConnectionType): Promise<$ReadOnlyArray<ColumnType>> => {

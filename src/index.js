@@ -2,9 +2,9 @@
 
 export {
   getByIds,
-  getByIdsUsingJoiningTable
+  getByIdsUsingJoiningTable,
 } from './routines';
 export {
   PostLoaderError,
-  NotFoundError
+  NotFoundError,
 } from './errors';

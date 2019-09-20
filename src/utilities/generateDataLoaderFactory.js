@@ -3,15 +3,15 @@
 import pluralize from 'pluralize';
 import {
   camelCase,
-  upperFirst
+  upperFirst,
 } from 'lodash';
 import type {
   ColumnType,
   DataTypeMapType,
-  IndexType
+  IndexType,
 } from '../types';
 import {
-  UnexpectedStateError
+  UnexpectedStateError,
 } from '../errors';
 import Logger from '../Logger';
 import generateFlowTypeDocument from './generateFlowTypeDocument';
@@ -22,7 +22,7 @@ import createLoaderTypePropertyDeclaration from './createLoaderTypePropertyDecla
 import pluralizeTableName from './pluralizeTableName';
 
 const log = Logger.child({
-  namespace: 'generateDataLoaderFactory'
+  namespace: 'generateDataLoaderFactory',
 });
 
 const createLoaderByIdsDeclaration = (loaderName: string, tableName: string, keyColumnName, columnSelector: string, resultIsArray: boolean) => {
@@ -54,7 +54,7 @@ export default (
     .map((column) => {
       return {
         ...column,
-        mappedTableName: column.mappedTableName || column.tableName
+        mappedTableName: column.mappedTableName || column.tableName,
       };
     });
 
@@ -178,12 +178,12 @@ export default (
     const relations = [
       {
         key: firstIdColumnNames[0],
-        resource: firstIdColumnNames[1]
+        resource: firstIdColumnNames[1],
       },
       {
         key: firstIdColumnNames[1],
-        resource: firstIdColumnNames[0]
-      }
+        resource: firstIdColumnNames[0],
+      },
     ];
 
     for (const relation of relations) {
@@ -199,7 +199,7 @@ export default (
 
       if (!resourceTableColumns.length) {
         log.warn({
-          relation
+          relation,
         }, 'resource without columns');
 
         continue;

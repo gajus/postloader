@@ -1,7 +1,7 @@
 // @flow
 
 import type {
-  ColumnType
+  ColumnType,
 } from '../types';
 
 export default (tableName: string, columns: $ReadOnlyArray<ColumnType>): boolean => {

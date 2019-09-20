@@ -1,11 +1,11 @@
 // @flow
 
 import {
-  sortBy
+  sortBy,
 } from 'lodash';
 import type {
   ColumnType,
-  DataTypeMapType
+  DataTypeMapType,
 } from '../types';
 import getFlowType from './getFlowType';
 import formatTypeName from './formatTypeName';
@@ -30,7 +30,7 @@ export default (unnormalisedColumns: $ReadOnlyArray<ColumnType>, dataTypeMap: Da
     .map((column) => {
       return {
         ...column,
-        mappedTableName: column.mappedTableName || column.tableName
+        mappedTableName: column.mappedTableName || column.tableName,
       };
     });
 
