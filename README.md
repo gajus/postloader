@@ -201,7 +201,7 @@ Example:
 // @flow
 
 import {
-  createConnection
+  createPool
 } from 'slonik';
 import {
   createLoaders
@@ -210,11 +210,9 @@ import type {
   UserRecordType
 } from './generated/PostLoader';
 
-const connection = await createConnection({
-  host: '127.0.0.1'
-});
+const pool = createPool('postgres://');
 
-const loaders = createLoaders(connection);
+const loaders = createLoaders(pool);
 
 const user = await loaders.UserByIdLoader.load(1);
 
