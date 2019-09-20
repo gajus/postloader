@@ -28,7 +28,7 @@ export default async (
         ${sql.raw(identifiers)}
       FROM ${sql.identifier([joiningTableName])} r1
       INNER JOIN ${sql.identifier([targetResourceTableName])} r2 ON r2.id = ${sql.identifier(['r1', joiningKeyName + '_id'])}
-      WHERE ${sql.identifier(['r1', lookupKeyName + '_id'])} IN (${sql.valueList(ids)})
+      WHERE ${sql.identifier(['r1', lookupKeyName + '_id'])} = ANY(${sql.array(ids, 'int4')})
     `);
   }
 
