@@ -28,7 +28,7 @@ test('creates a loader for unique indexes', (t) => {
         tableName: 'foo',
       },
     ],
-    {}
+    {},
   ));
 
   const expected = trim(`
@@ -92,7 +92,7 @@ test('creates a loader for unique indexes (uses mappedTableName when available)'
         tableName: 'foo',
       },
     ],
-    {}
+    {},
   ));
 
   const expected = trim(`
@@ -147,7 +147,7 @@ test('creates a loader for _id columns', (t) => {
       },
     ],
     [],
-    {}
+    {},
   ));
 
   const expected = trim(`
@@ -229,7 +229,7 @@ test('creates a loader for a join table', (t) => {
       },
     ],
     [],
-    {}
+    {},
   ));
 
   const expected = trim(`

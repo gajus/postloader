@@ -12,7 +12,7 @@ test('correctly recognizes a joining table (genre_movie)', (t) => {
     [
       createColumnWithName('genre_id'),
       createColumnWithName('movie_id'),
-    ]
+    ],
   );
 
   t.true(tableIsJoining);
@@ -24,7 +24,7 @@ test('correctly recognizes a joining table (event_event_attribute)', (t) => {
     [
       createColumnWithName('event_id'),
       createColumnWithName('event_attribute_id'),
-    ]
+    ],
   );
 
   t.true(tableIsJoining);
@@ -36,7 +36,7 @@ test('correctly recognizes not a joining table', (t) => {
     [
       createColumnWithName('id'),
       createColumnWithName('name'),
-    ]
+    ],
   );
 
   t.true(!tableIsJoining);

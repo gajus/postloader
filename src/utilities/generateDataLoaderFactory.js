@@ -37,7 +37,7 @@ const createLoaderByIdsUsingJoiningTableDeclaration = (
   targetResourceTableName: string,
   joiningKeyName: string,
   lookupKeyName: string,
-  columnSelector: string
+  columnSelector: string,
 ) => {
   return `const ${loaderName} = new DataLoader((ids) => {
   return getByIdsUsingJoiningTable(connection, '${joiningTableName}', '${targetResourceTableName}', '${joiningKeyName}', '${lookupKeyName}', '${columnSelector}', ids);
@@ -99,7 +99,7 @@ export default (
           loaderName,
           dataTypeMap[tableColumn.dataType] ? dataTypeMap[tableColumn.dataType] : tableColumn.dataType,
           tableColumn.mappedTableName,
-          true
+          true,
         );
 
         loaderTypes.push(loaderType);
@@ -137,7 +137,7 @@ export default (
         loaderName,
         dataTypeMap[indexColumn.dataType] ? dataTypeMap[indexColumn.dataType] : indexColumn.dataType,
         indexColumn.mappedTableName,
-        false
+        false,
       );
 
       loaderTypes.push(loaderType);
@@ -223,7 +223,7 @@ export default (
         loaderName,
         dataTypeMap[keyColumn.dataType] ? dataTypeMap[keyColumn.dataType] : keyColumn.dataType,
         relation.resource,
-        true
+        true,
       );
 
       loaderTypes.push(loaderType);

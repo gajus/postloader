@@ -17,7 +17,7 @@ export default async (
   joiningKeyName: string,
   lookupKeyName: string,
   identifiers: string,
-  ids: $ReadOnlyArray<string | number>
+  ids: $ReadOnlyArray<string | number>,
 ): Promise<$ReadOnlyArray<any>> => {
   let rows = [];
 

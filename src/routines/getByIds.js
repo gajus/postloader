@@ -28,7 +28,7 @@ export default async (
   ids: $ReadOnlyArray<string | number>,
   idName: string = 'id',
   identifiers: string,
-  resultIsArray: boolean
+  resultIsArray: boolean,
 ): Promise<$ReadOnlyArray<any>> => {
   let rows = [];
 
