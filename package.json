@@ -25,6 +25,7 @@
     "pluralize": "^8.0.0",
     "roarr": "^2.14.4",
     "slonik": "^21.4.0",
+    "slonik-sql-tag-raw": "^1.0.1",
     "yargs": "^14.2.0"
   },
   "description": "A scaffolding tool for projects using DataLoader, Flow and PostgreSQL.",

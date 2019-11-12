@@ -4,6 +4,9 @@ import {
   sql,
 } from 'slonik';
 import {
+  raw,
+} from 'slonik-sql-tag-raw';
+import {
   camelCase,
 } from 'lodash';
 import {
@@ -35,8 +38,10 @@ export default async (
   if (ids.length > 0) {
     const idType = typeof ids[0] === 'number' ? 'int4' : 'text';
 
+    // @todo Do not use slonik-sql-tag-raw.
+
     rows = await connection.any(sql`
-      SELECT ${sql.raw(identifiers)}
+      SELECT ${raw(identifiers)}
       FROM ${sql.identifier([tableName])}
       WHERE ${sql.identifier([idName])} = ANY(${sql.array(ids, idType)})
     `);

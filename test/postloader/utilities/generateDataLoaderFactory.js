@@ -55,7 +55,7 @@ export type LoadersType = {|
   +FooByBarLoader: DataLoader<string, FooRecordType>
 |};
 
-export const createLoaders = (connection: DatabaseConnectionType, dataLoaderConfigurationMap: Object = {}): LoadersType => {
+export const createLoaders = (connection: $Shape<DatabaseConnectionType>, dataLoaderConfigurationMap: Object = {}): LoadersType => {
   const FooByBarLoader = new DataLoader((ids) => {
     return getByIds(connection, 'foo', ids, 'bar', '"bar"', false);
   }, dataLoaderConfigurationMap.FooByBarLoader);
@@ -119,7 +119,7 @@ export type LoadersType = {|
   +BazByBarLoader: DataLoader<string, BazRecordType>
 |};
 
-export const createLoaders = (connection: DatabaseConnectionType, dataLoaderConfigurationMap: Object = {}): LoadersType => {
+export const createLoaders = (connection: $Shape<DatabaseConnectionType>, dataLoaderConfigurationMap: Object = {}): LoadersType => {
   const BazByBarLoader = new DataLoader((ids) => {
     return getByIds(connection, 'foo', ids, 'bar', '"bar"', false);
   }, dataLoaderConfigurationMap.BazByBarLoader);
@@ -174,7 +174,7 @@ export type LoadersType = {|
   +BazsByBarIdLoader: DataLoader<string, $ReadOnlyArray<BazRecordType>>
 |};
 
-export const createLoaders = (connection: DatabaseConnectionType, dataLoaderConfigurationMap: Object = {}): LoadersType => {
+export const createLoaders = (connection: $Shape<DatabaseConnectionType>, dataLoaderConfigurationMap: Object = {}): LoadersType => {
   const BazsByBarIdLoader = new DataLoader((ids) => {
     return getByIds(connection, 'foo', ids, 'bar_id', '"bar_id" "barId"', true);
   }, dataLoaderConfigurationMap.BazsByBarIdLoader);
@@ -270,7 +270,7 @@ export type LoadersType = {|
   +FoosByBarIdLoader: DataLoader<string, $ReadOnlyArray<FooRecordType>>
 |};
 
-export const createLoaders = (connection: DatabaseConnectionType, dataLoaderConfigurationMap: Object = {}): LoadersType => {
+export const createLoaders = (connection: $Shape<DatabaseConnectionType>, dataLoaderConfigurationMap: Object = {}): LoadersType => {
   const BarFoosByBarIdLoader = new DataLoader((ids) => {
     return getByIds(connection, 'bar_foo', ids, 'bar_id', '"bar_id" "barId", "foo_id" "fooId"', true);
   }, dataLoaderConfigurationMap.BarFoosByBarIdLoader);
