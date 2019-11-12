@@ -258,7 +258,7 @@ ${loaderTypes.map((body) => {
   }).sort().join(',\n')}
 |};
 
-export const createLoaders = (connection: DatabaseConnectionType, dataLoaderConfigurationMap: Object = {}): LoadersType => {
+export const createLoaders = (connection: $Shape<DatabaseConnectionType>, dataLoaderConfigurationMap: Object = {}): LoadersType => {
 ${loaders
     .map((body) => {
       return indent(body, 2);
