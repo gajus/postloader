@@ -6,7 +6,7 @@ export type {
 
 export type DataTypeMapType = {
   +[key: string]: string,
-  ...,
+  ...
 };
 
 export type ColumnType = {|
