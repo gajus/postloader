@@ -5,17 +5,16 @@
     "url": "http://gajus.com"
   },
   "ava": {
+    "babel": {
+      "compileAsTests": [
+        "test/helpers/**/*"
+      ]
+    },
     "files": [
-      "test/**/*"
-    ],
-    "helpers": [
-      "test/helpers/**/*"
+      "test/postloader/**/*"
     ],
     "require": [
       "@babel/register"
-    ],
-    "sources": [
-      "src/**/*"
     ]
   },
   "bin": "./dist/bin/index.js",
@@ -30,6 +29,7 @@
   },
   "description": "A scaffolding tool for projects using DataLoader, Flow and PostgreSQL.",
   "devDependencies": {
+    "@ava/babel": "^1.0.1",
     "@babel/cli": "^7.10.1",
     "@babel/core": "^7.10.2",
     "@babel/node": "^7.10.1",

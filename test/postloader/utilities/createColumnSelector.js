@@ -12,7 +12,7 @@ test('creates multiple column selector', (t) => {
     createColumnWithName('bar_baz'),
   ]);
 
-  t.true(columnSelector === '"foo", "bar_baz" "barBaz"');
+  t.is(columnSelector, '"foo", "bar_baz" "barBaz"');
 });
 
 test('creates multiple column selector using an alias', (t) => {
@@ -21,5 +21,5 @@ test('creates multiple column selector using an alias', (t) => {
     createColumnWithName('bar_baz'),
   ], 't1');
 
-  t.true(columnSelector === 't1."foo", t1."bar_baz" "barBaz"');
+  t.is(columnSelector, 't1."foo", t1."bar_baz" "barBaz"');
 });

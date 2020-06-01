@@ -24,6 +24,6 @@ test('correctly maps known types', (t) => {
       throw new TypeError('Unexpected type');
     }
 
-    t.true(getFlowType(databaseTypeName) === flowType, flowType);
+    t.is(getFlowType(databaseTypeName), flowType, flowType);
   }
 });

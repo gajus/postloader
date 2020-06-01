@@ -39,5 +39,5 @@ test('correctly recognizes not a joining table', (t) => {
     ],
   );
 
-  t.true(!tableIsJoining);
+  t.false(tableIsJoining);
 });

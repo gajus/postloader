@@ -26,7 +26,7 @@ export type {
   BarRecordType
 };`);
 
-  t.true(actual === expected);
+  t.is(actual, expected);
 });
 
 test('create flow type document with multiple types', (t) => {
@@ -55,5 +55,5 @@ export type {
   QuxRecordType
 };`);
 
-  t.true(actual === expected);
+  t.is(actual, expected);
 });
